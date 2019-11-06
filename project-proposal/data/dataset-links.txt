@@ -6,3 +6,13 @@ https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme
 
 death-causes-usa
 https://catalog.data.gov/dataset/age-adjusted-death-rates-for-the-top-10-leading-causes-of-death-united-states-2013/resource/0e603f1d-31bf-4809-8f10-a994b305b379
+
+USA-*
+https://www.cdc.gov/nchs/hus/contents2017.htm
+(USA-cholesterol Table 055)
+(USA-death-rate-race Table 016)
+(USA-gdp-expenditures Table 093)
+(USA-hypertension Table 054)
+(USA-no-insurance-group Table 114)
+(USA-smoking Table 047)
+(USA-weight Table 058)
