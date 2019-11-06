@@ -17,6 +17,31 @@ For our project we will use data from the domain of healthcare. We have chosen t
 **_Three data-driven questions do you hope to answer about this domain (6 points, 2 points each)_**
 **_Question is related to the field (1 point)_**
 **_Question can be answered with data (1 point)_**
+***
+Question proposal by Rodrigo:
+1. What are the main death causes over the years?
+	-Which is the primary death cause?
+	-Has the trend over the years changed the death causes?
+
+2. What are the differences between the countries?
+	COMPARISON USA vs SCOTLAND
+	- Are there any differences on the death causes between countries?
+	- Does one of the countries have a clear overall lower death rate? Which trend does each country follow?
+	- Which country is safer for violent deaths? And for non-violent?
+
+3. Have the lifestyle, economical and social factors involved an influence?
+	USA
+	- Are there particular states with much likely causes?
+	- Is there a relationship between the rate of not insuranced (USA-no-insurance-group) and death rate by state?
+	- Are minority groups (USA-death-rate-race) more exposed to violent deaths? And non-violent?
+	
+	ECONOMICS
+	- How much does the country spend in Public Healthcare VS it's GDP (does this affect specially one death cause more than the other?)
+	- Is there a relationship between health expenditure and death rates(USA-gdp-expenditures)?
+	
+	LIFESTYLE
+	- Relationship between cholesterol/hypertension/smoking/weight and corresponding deaths between countries?
+***
 
 ## Data
 **_For each identified data source, provide/complete the following:_**
