@@ -23,13 +23,13 @@ Question proposal by Rodrigo:
 	-Which is the primary death cause?
 	-Has the trend over the years changed the death causes?
 
-2. What are the differences between the countries?
+2. What are the differences between the countries?  
 	COMPARISON USA vs SCOTLAND
 	- Are there any differences on the death causes between countries?
 	- Does one of the countries have a clear overall lower death rate? Which trend does each country follow?
 	- Which country is safer for violent deaths? And for non-violent?
 
-3. Have the lifestyle, economical and social factors involved an influence?
+3. Have the lifestyle, economical and social factors involved an influence?  
 	USA
 	- Are there particular states with much likely causes?
 	- Is there a relationship between the rate of not insuranced (USA-no-insurance-group) and death rate by state?
