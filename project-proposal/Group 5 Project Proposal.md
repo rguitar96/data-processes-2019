@@ -12,11 +12,11 @@ For our project we will use data from the domain of healthcare. We have chosen t
 **_Three examples of other data driven projects related to this domain (6 points, 2 points each)?_**
 **_Provides link to a data driven projects (1 point)_**
 **_Briefly describes the project in 1 - 2 sentences (1 points)_**
-### European Health Data & Evidence Network (EHDEN)
-EHDEN’s mission is to reduce the time to provide an answer in real world, health research. It will achieve this by developing the required infrastructure in a federated network at scale across Europe, collaboration on research methodologies, and education in an open science collaboration.
-
-[Link](https://www.ehden.eu/)
-### Fair4Health
+#### European Health Data & Evidence Network (EHDEN)
+EHDEN’s mission is to reduce the time to provide an answer in real world, health research. It will achieve this by developing the required infrastructure in a federated network at scale across Europe, collaboration on research methodologies, and education in an open science collaboration. [Link to the project.](https://www.ehden.eu/)
+#### Fair4Health
+Fair4Health is a solution to the European Commission challenge to make the data comply to be findable, accessible, interoperable and reusable (FAIR). The objective of Fair4Health is to facilitate and encourage the EU health research community to FAIRify, share and reuse their datasets derived from publicly funded research initiatives.
+[Link to the project.](https://www.fair4health.eu/en/project#)
 
 
 ## Questions
