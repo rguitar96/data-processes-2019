@@ -18,7 +18,7 @@ EHDEN’s mission is to reduce the time to provide an answer in real world, heal
 Fair4Health is a solution to the European Commission challenge to make the data comply to be findable, accessible, interoperable and reusable (FAIR). The objective of Fair4Health is to facilitate and encourage the EU health research community to FAIRify, share and reuse their datasets derived from publicly funded research initiatives.
 [Link to the project.](https://www.fair4health.eu/en/project#)
 ### BigMedilytics
-BigMedilytics is a 12 pilots EU founded project aimed to implement state-of-the-art Big Data technology to reduce costs, improve patient outcomes and deliver better access to healthcare facilities in the European Union. The project is composed of 12 pilots divided in three main areas: Population Health and Chronic Disease Management, Oncology and Industralization of healthcare services.
+BigMedilytics is a 12-pilot EU founded project aimed to implement state-of-the-art Big Data technology to reduce costs, improve patient outcomes and deliver better access to healthcare facilities in the European Union. The project is composed of 12 pilots divided in three main areas: Population Health and Chronic Disease Management, Oncology and Industralization of healthcare services.
 [Link to the project.](https://www.bigmedilytics.eu/big-data-project/#project-background)
 
 ## Questions
