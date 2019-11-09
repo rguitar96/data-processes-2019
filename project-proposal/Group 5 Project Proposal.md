@@ -1,4 +1,9 @@
 # Group 5 Project Proposal 
+* Antoñanzas Martínez, Guillermo
+* Pueblas Núñez, Rodrigo
+* Martínez Capella, Ignacio
+* Burrell, David
+
 
 **_Why are you interested in this field/domain? Describes in at least 2 - 3 sentences why the
 group is interested in this area. May be personal, or related to pertinence of the domain. (1
