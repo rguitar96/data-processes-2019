@@ -12,7 +12,9 @@ For our project we will use data from the domain of healthcare. We have chosen t
 **_Three examples of other data driven projects related to this domain (6 points, 2 points each)?_**
 **_Provides link to a data driven projects (1 point)_**
 **_Briefly describes the project in 1 - 2 sentences (1 points)_**
-
+### European Health Data & Evidence Network (EHDEN)
+EHDEN’s mission is to reduce the time to provide an answer in real world, health research. It will achieve this by developing the required infrastructure in a federated network at scale across Europe, collaboration on research methodologies, and education in an open science collaboration.
+Link (https://www.ehden.eu/vision-and-mission/)
 ## Questions
 **_Three data-driven questions do you hope to answer about this domain (6 points, 2 points each)_**
 **_Question is related to the field (1 point)_**
