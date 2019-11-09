@@ -1,7 +1,5 @@
 # Group 5 Project Proposal 
 
----
-
 **_Why are you interested in this field/domain? Describes in at least 2 - 3 sentences why the
 group is interested in this area. May be personal, or related to pertinence of the domain. (1
 point)_**
@@ -22,7 +20,6 @@ Fair4Health is a solution to the European Commission challenge to make the data 
 #### BigMedilytics
 BigMedilytics is a 12-pilot EU founded project aimed to implement state-of-the-art Big Data technology to reduce costs, improve patient outcomes and deliver better access to healthcare facilities in the European Union. The project is composed of 12 pilots divided in three main areas: Population Health and Chronic Disease Management, Oncology and Industralization of healthcare services.
 [Link to the project.](https://www.bigmedilytics.eu/big-data-project/#project-background)
-___
 
 ## Questions
 **_Three data-driven questions do you hope to answer about this domain (6 points, 2 points each)_**
@@ -52,8 +49,6 @@ Question proposal by Rodrigo:
 	
 	**LIFESTYLE**
 	- Relationship between cholesterol/hypertension/smoking/weight and corresponding deaths between countries?
-***
-___
 
 ## Data
 *__For each identified data source, provide/complete the following:__*
