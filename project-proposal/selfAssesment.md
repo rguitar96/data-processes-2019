@@ -7,9 +7,9 @@
 - [x] Three examples of other data driven projects related to this domain (6 points, 2 points each)?
 - [x] Provides link to a data driven projects (1 point)
 - [x] Briefly describes the project in 1 - 2 sentences (1 points)
-Three data-driven questions do you hope to answer about this domain (6 points, 2 points each)
+- [x] Three data-driven questions do you hope to answer about this domain (6 points, 2 points each)
 - [x] Question is related to the field (1 point)
-- [ ] Question can be answered with data (1 point)
+- [x] Question can be answered with data (1 point)
 ## Finding Data (15 points, 5 points each)
 For each identified data source, provide/complete the following:
 - [x] Link to URL where data is from (1 point)
