@@ -21,6 +21,10 @@ BigMedilytics is a 12-pilot EU founded project aimed to implement state-of-the-a
 [Link to the project.](https://www.bigmedilytics.eu/big-data-project/#project-background)
 
 ## Questions
+We have chosen three main questions to answer with the selected datasets. Each question has been divided into several subquestions in order to give more specific answers and get a better insight of the data.
+
+Question 1 deals with the death causes for different countries, analysing each country individually. Question 2, on the other hand, involves the comparison of several countries to find differences between them. Finally, Question 3 deals with environmental factors that may be influencing the death rates and main death causes, such as lifestyle or economics.
+
 1. What are the main death causes over the years?
  	1. Which is the primary death cause?
  	2. Has the trend over the years changed the death causes?
@@ -30,28 +34,38 @@ BigMedilytics is a 12-pilot EU founded project aimed to implement state-of-the-a
 	2. Does one of the countries have a clear overall lower death rate? Which trend does each country follow?
 	3. Which country is safer for violent deaths? And for non-violent?
 
-3. Have the lifestyle, economical and social factors involved an influence?  
+3. Have the lifestyle, economical and social factors supposed an influence?  
 	1. Are there particular states with much likely causes?
 	2. Is there a relationship between the rate of not insuranced (USA-no-insurance-group) and death rate by state?
 	3. Are minority groups (USA-death-rate-race) more exposed to violent deaths? And non-violent?
 	4. How much does the country spend in Public Healthcare VS it's GDP (does this affect specially one death cause more than the other?)
 	5. Is there a relationship between health expenditure and death rates(USA-gdp-expenditures)?
 	6. Relationship between cholesterol/hypertension/smoking/weight and corresponding deaths between countries?
-	
-	
 
 ## Data
 ### death-causes-spain-2017 
 * [Link to the Dataset](https://datos.gob.es/es/catalogo/ea0010587-defunciones-por-causas-lista-reducida-sexo-y-edad-nacional-estadistica-de-defunciones-segun-la-causa-de-muerte-identificador-api-t15-p417-a2017-l0-01001-px)
 
-This dataset was gathered by the National State administration of Spain. It was published by the INE (National Institute of Statistics) and has the number of deaths registered in 2017 divided by cause and age range. The file has 469 rows of data and 23 columns. It also has the information divided by gender but the table is not flat, so we will have to transform the data. Once transformed the table would have 4872 Observations and 4 Features (Cause of Death, Gender, Age Range and Death Count). With this dataset, we could answer questions regarding the Causes of Death of Spain and later on combine them with other datasets to make comparaisions.
+This dataset was gathered by the National State administration of Spain. It was published by the INE (National Institute of Statistics) and has the number of deaths registered in 2017 divided by cause and age range.
+
+The file has 469 rows of data and 23 columns. It also has the information divided by gender but the table is not flat, so we will have to transform the data. Once transformed, the table would have 4872 Observations and 4 Features (Cause of Death, Gender, Age Range and Death Count).
+
+With this dataset, we could answer questions regarding the Causes of Death of Spain (Question 1) and later on combine them with other datasets to make comparisons (Question 2).
 
 ### death-causes-scotland
 * [Link to the Dataset](https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/deaths/age-standardised-death-rates-calculated-using-the-esp) (Table 1)
 
-For this dataset, we can find the information on how it was gathered in the "[Methodology](https://www.nrscotland.gov.uk/files//statistics/age-standardised-death-rates-esp/2017/age-standardised-17-methodology.pdf)" section of the source. This dataset contains 4 data tables, all of them with 14 columns (causes of death) and the death rates from 1994 to 2018: _Death rates for Scotland: age-standardised - All Persons_, Only Males_, Only Females_ and _All Persons age-and-sex-standardised rate_. Knowing that the rates of death are per 100.000, we could transform the data and adapt it so it has a similar structure as the one we can see in the dataset of Spain so we can answer similar questions and compare the data.
+For this dataset, we can find the information on how it was gathered in the "[Methodology](https://www.nrscotland.gov.uk/files//statistics/age-standardised-death-rates-esp/2017/age-standardised-17-methodology.pdf)" section of the source.
+
+This dataset contains 4 data tables, all of them with 14 columns (causes of death) and the death rates from 1994 to 2018: _Death rates for Scotland: age-standardised - All Persons_, Only Males_, Only Females_ and _All Persons age-and-sex-standardised rate_.
+
+Knowing that the rates of death are per 100.000, we could transform the data and adapt it so it has a similar structure as the one we can see in the dataset of Spain so we can answer similar questions (Questions 1 and 2).
 
 ### death-causes-usa
 * [Link to the Dataset](https://catalog.data.gov/dataset/age-adjusted-death-rates-for-the-top-10-leading-causes-of-death-united-states-2013/resource/0e603f1d-31bf-4809-8f10-a994b305b379)
 
-This dataset presents the age-adjusted death rates for the 10 leading causes of death in the United States, and we will use the data of 2017. Data is based on information from all resident death certificates filed in the 50 states and the District of Columbia using demographic and medical characteristics. The information we will use in this dataset leaves us with 572 observations and 4 columns (*Cause Name*, *State*, *Deaths* and *Age-adjusted Death Rate*). With this data we can make comparaisons to the rest of datasets and answer the lifestyle and USA specific questions.
+This dataset presents the age-adjusted death rates for the 10 leading causes of death in the United States. The data is based on information from all resident death certificates filed in the 50 states and the District of Columbia using demographic and medical characteristics.
+
+The information we will use in this dataset leaves us with 572 observations and 4 columns (*Cause Name*, *State*, *Deaths* and *Age-adjusted Death Rate*).
+
+With this data we can make insights into American death causes (Question 1), make comparaisons with the rest of datasets (Question 2) and analyse the influene of environmental factors (Question 3).
