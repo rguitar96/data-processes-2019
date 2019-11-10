@@ -47,7 +47,7 @@ Question 1 deals with the death causes for different countries, analysing each c
 
 ## Data
 ### death-causes-spain-2017 
-* [Link to the Dataset](https://datos.gob.es/es/catalogo/ea0010587-defunciones-por-causas-lista-reducida-sexo-y-edad-nacional-estadistica-de-defunciones-segun-la-causa-de-muerte-identificador-api-t15-p417-a2017-l0-01001-px)
+* [Link to the dataset](https://datos.gob.es/es/catalogo/ea0010587-defunciones-por-causas-lista-reducida-sexo-y-edad-nacional-estadistica-de-defunciones-segun-la-causa-de-muerte-identificador-api-t15-p417-a2017-l0-01001-px)
 
 This dataset was gathered by the National State administration of Spain. It was published by the INE (National Institute of Statistics) and has the number of deaths registered in 2017 divided by cause and age range.
 
@@ -56,7 +56,7 @@ The file has 469 rows of data and 23 columns. It also has the information divide
 With this dataset, we could answer questions regarding the death casues of Spain (Question 1) and later on combine them with other datasets to make comparisons (Question 2).
 
 ### death-causes-scotland
-* [Link to the Dataset](https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/deaths/age-standardised-death-rates-calculated-using-the-esp) (Table 1)
+* [Link to the dataset](https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/deaths/age-standardised-death-rates-calculated-using-the-esp) (Table 1)
 
 The data was gathered by the National Records of Scotland, a Non-Ministerial Department of the Scottish Government. The data was generated using the 2013 European Standard Population (ESP2013) in order to show trends in mortality from particular causes after taking account of changes in the distribution by age of the Scottish population. More information on how it was produced can be found in the [Methodology](https://www.nrscotland.gov.uk/files//statistics/age-standardised-death-rates-esp/2017/age-standardised-17-methodology.pdf) section of the source. 
 
@@ -65,7 +65,7 @@ This dataset contains 4 data tables, all of them with 14 columns (causes of deat
 Knowing that the rates of death are per 100.000, we could transform the data and adapt it so it has a similar structure as the one we can see in the dataset of Spain so we can answer similar questions (Questions 1 and 2).
 
 ### death-causes-usa
-* [Link to the Dataset](https://catalog.data.gov/dataset/age-adjusted-death-rates-for-the-top-10-leading-causes-of-death-united-states-2013/resource/0e603f1d-31bf-4809-8f10-a994b305b379)
+* [Link to the dataset](https://catalog.data.gov/dataset/age-adjusted-death-rates-for-the-top-10-leading-causes-of-death-united-states-2013/resource/0e603f1d-31bf-4809-8f10-a994b305b379)
 
 The data was published by the Centers for Disease Control and Prevention. This dataset presents the age-adjusted death rates for the 10 leading causes of death in the United States. The data is based on information from all resident death certificates filed in the 50 states and the District of Columbia using demographic and medical characteristics. Age-adjusted death rates (per 100,000 population) are based on the 2000 U.S. standard population.
 
