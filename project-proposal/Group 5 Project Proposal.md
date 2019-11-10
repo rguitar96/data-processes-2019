@@ -12,13 +12,16 @@ For our project we will use data from the domain of __healthcare__. We have chos
 
 ## Example projects
 ### European Health Data & Evidence Network (EHDEN)
-EHDEN’s mission is to reduce the time to provide an answer in real world, health research. It will achieve this by developing the required infrastructure in a federated network at scale across Europe, collaboration on research methodologies, and education in an open science collaboration. [Link to the project.](https://www.ehden.eu/)
+* [Link to the project.](https://www.ehden.eu/)
+EHDEN’s mission is to reduce the time to provide an answer in real world, health research. It will achieve this by developing the required infrastructure in a federated network at scale across Europe, collaboration on research methodologies, and education in an open science collaboration. 
 ### Fair4Health
+* [Link to the project.](https://www.fair4health.eu/en/project#)
 Fair4Health is a solution to the European Commission challenge to make the data comply to be findable, accessible, interoperable and reusable (FAIR). The objective of Fair4Health is to facilitate and encourage the EU health research community to FAIRify, share and reuse their datasets derived from publicly funded research initiatives.
-[Link to the project.](https://www.fair4health.eu/en/project#)
+
 ### BigMedilytics
+* [Link to the project.](https://www.bigmedilytics.eu/big-data-project/#project-background)
+
 BigMedilytics is a 12-pilot EU founded project aimed to implement state-of-the-art Big Data technology to reduce costs, improve patient outcomes and deliver better access to healthcare facilities in the European Union. The project is composed of 12 pilots divided in three main areas: Population Health and Chronic Disease Management, Oncology and Industralization of healthcare services.
-[Link to the project.](https://www.bigmedilytics.eu/big-data-project/#project-background)
 
 ## Questions
 We have chosen three main questions to answer with the selected datasets. Each question has been divided into several subquestions in order to give more specific answers and get a better insight of the data.
@@ -50,12 +53,12 @@ This dataset was gathered by the National State administration of Spain. It was 
 
 The file has 469 rows of data and 23 columns. It also has the information divided by gender but the table is not flat, so we will have to transform the data. Once transformed, the table would have 4872 Observations and 4 Features (Cause of Death, Gender, Age Range and Death Count).
 
-With this dataset, we could answer questions regarding the Causes of Death of Spain (Question 1) and later on combine them with other datasets to make comparisons (Question 2).
+With this dataset, we could answer questions regarding the death casues of Spain (Question 1) and later on combine them with other datasets to make comparisons (Question 2).
 
 ### death-causes-scotland
 * [Link to the Dataset](https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/vital-events/deaths/age-standardised-death-rates-calculated-using-the-esp) (Table 1)
 
-For this dataset, we can find the information on how it was gathered in the "[Methodology](https://www.nrscotland.gov.uk/files//statistics/age-standardised-death-rates-esp/2017/age-standardised-17-methodology.pdf)" section of the source.
+The data was gathered by the National Records of Scotland, a Non-Ministerial Department of the Scottish Government. The data was generated using the 2013 European Standard Population (ESP2013) in order to show trends in mortality from particular causes after taking account of changes in the distribution by age of the Scottish population. More information on how it was produced can be found in the [Methodology](https://www.nrscotland.gov.uk/files//statistics/age-standardised-death-rates-esp/2017/age-standardised-17-methodology.pdf) section of the source. 
 
 This dataset contains 4 data tables, all of them with 14 columns (causes of death) and the death rates from 1994 to 2018: _Death rates for Scotland: age-standardised - All Persons_, Only Males_, Only Females_ and _All Persons age-and-sex-standardised rate_.
 
@@ -64,7 +67,7 @@ Knowing that the rates of death are per 100.000, we could transform the data and
 ### death-causes-usa
 * [Link to the Dataset](https://catalog.data.gov/dataset/age-adjusted-death-rates-for-the-top-10-leading-causes-of-death-united-states-2013/resource/0e603f1d-31bf-4809-8f10-a994b305b379)
 
-This dataset presents the age-adjusted death rates for the 10 leading causes of death in the United States. The data is based on information from all resident death certificates filed in the 50 states and the District of Columbia using demographic and medical characteristics.
+The data was published by the Centers for Disease Control and Prevention. This dataset presents the age-adjusted death rates for the 10 leading causes of death in the United States. The data is based on information from all resident death certificates filed in the 50 states and the District of Columbia using demographic and medical characteristics. Age-adjusted death rates (per 100,000 population) are based on the 2000 U.S. standard population.
 
 The information we will use in this dataset leaves us with 572 observations and 4 columns (*Cause Name*, *State*, *Deaths* and *Age-adjusted Death Rate*).
 
