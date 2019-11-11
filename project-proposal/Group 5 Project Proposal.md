@@ -13,9 +13,12 @@ For our project we will use data from the domain of __healthcare__. We have chos
 ## Example projects
 ### European Health Data & Evidence Network (EHDEN)
 * [Link to the project.](https://www.ehden.eu/)
+
 EHDEN’s mission is to reduce the time to provide an answer in real world, health research. It will achieve this by developing the required infrastructure in a federated network at scale across Europe, collaboration on research methodologies, and education in an open science collaboration. 
+
 ### Fair4Health
 * [Link to the project.](https://www.fair4health.eu/en/project#)
+
 Fair4Health is a solution to the European Commission challenge to make the data comply to be findable, accessible, interoperable and reusable (FAIR). The objective of Fair4Health is to facilitate and encourage the EU health research community to FAIRify, share and reuse their datasets derived from publicly funded research initiatives.
 
 ### BigMedilytics
