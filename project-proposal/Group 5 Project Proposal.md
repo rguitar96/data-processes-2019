@@ -77,7 +77,7 @@ The information we will use in this dataset leaves us with 572 observations and 
 With this data we can make insights into American death causes (Question 1), make comparisons with the rest of datasets (Question 2) and analyse the influene of environmental factors (Question 3).
 
 ### NCHS USA data
-[Link to the datasets](https://www.cdc.gov/nchs/hus/contents2017.htm)
+* [Link to the datasets](https://www.cdc.gov/nchs/hus/contents2017.htm)
 
 In addition to the previous datasets, we will use several data from NCHS about the USA population. Currently we have 7 tables from this site, with different number of observations and features, but we plan to use the ones we find useful in the site. Question 3 is the one most related to this topic.
 
