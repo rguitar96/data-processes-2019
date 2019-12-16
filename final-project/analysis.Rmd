@@ -1,0 +1,15 @@
+
+
+
+```{r}
+usa_deaths_states = read.csv("data/death-causes-usa.csv", sep=";")
+
+
+usa_deaths = usa_deaths_states %>% filter(State == "United States") %>% filter(Cause.Name != "All causes")
+
+ggplot(usa_deaths, aes(x=Year, y=Age.adjusted.Death.Rate, fill=Cause.Name)) + 
+  geom_area()
+
+ggplot(usa_deaths, aes(x=Year, y=Deaths, color=Cause.Name)) + 
+  geom_line()
+```
