@@ -71,66 +71,46 @@ ggplot(usa_deaths, aes(x=Year, y=log(Deaths), color=Cause.Name)) +
 
 
 ```{r}
-data <- spain_deaths %>% filter(GENDER == "Both") %>% filter(AGE=="All ages") %>% filter(DISEASE!="All causes") %>% filter(DISEASE!="Other causes") %>% top_n(10, NUMBER.OF.DEATHS)
-ggplot(data, aes(area=NUMBER.OF.DEATHS, fill=DISEASE)) +
+
+#Get data about the top 10 diseases in the Spanish data set. Ignore "Other causes"
+topTenSpanishDiseases<- spain_deaths %>% filter(GENDER == "Both") %>% filter(AGE=="All ages") %>% filter(DISEASE!="All causes") %>% filter(DISEASE!="Other causes") %>% top_n(10, NUMBER.OF.DEATHS)
+
+#Generate tree map
+ggplot(topTenSpanishDiseases, aes(area=NUMBER.OF.DEATHS, fill=DISEASE, label=NUMBER.OF.DEATHS)) +
   scale_fill_brewer(palette = "Paired") +
   labs(title = "Most deadly diseases in Spain (2017)", fill = "Causes") +
-  geom_treemap()
+  geom_treemap() +
+  geom_treemap_text(fontface = "italic",
+                    colour = "white",
+                    place = "centre",
+                    grow = FALSE,
+                    reflow = TRUE) 
 ```
 
 ```{r}
-data2 <- spain_deaths
-data2$AGE <- factor(data2$AGE, c("0 to 1", "1 to 4", "5 to 9", "10 to 14", "15 to 19", "20 to 24", "25 to 29", "30 to 34", "35 to 39", "40 to 44", "45 to 49", "50 to 54", "55 to 59", "60 to 64", "65 to 69", "70 to 74", "75 to 79", "80 to 84", "85 to 89", "90 to 94", "95 or more", "All ages"))
 
-data2 <- data2 %>% filter(DISEASE == "Diseases of the circulatory system") %>% filter(GENDER != "Both") %>% filter(AGE != "All ages") 
+#Create data frame to hold data about people who have Diseases of the circulatory system
+diseasesCircSystemData <- spain_deaths
 
-data2 <- data2 %>% mutate(NUMBER.OF.DEATHS = ifelse(GENDER == "Males", -1 * NUMBER.OF.DEATHS, NUMBER.OF.DEATHS))
+#Set up AGE factor for pyramid plot
+diseasesCircSystemData$AGE <- factor(diseasesCircSystemData$AGE, c("0 to 1", "1 to 4", "5 to 9", "10 to 14", "15 to 19", "20 to 24", "25 to 29", "30 to 34", "35 to 39", "40 to 44", "45 to 49", "50 to 54", "55 to 59", "60 to 64", "65 to 69", "70 to 74", "75 to 79", "80 to 84", "85 to 89", "90 to 94", "95 or more", "All ages"))
 
- ggplot(data2, aes(x = AGE, y = NUMBER.OF.DEATHS, fill = GENDER)) + 
-  geom_bar(subset = .(GENDER == "Females"), stat = "identity") + 
-  geom_bar(subset = .(GENDER == "Males"), stat = "identity") + 
-  #scale_y_continuous(breaks = seq(-15000, 15000, 5000), 
-  #                   labels = paste0(as.character(c(seq(15, 0, -5), seq(5, 15, 5))), "m")) +
-  coord_flip() + 
+#Filter data to required 
+diseasesCircSystemData <- diseasesCircSystemData %>% filter(DISEASE == "Diseases of the circulatory system") %>% filter(GENDER != "Both") %>% filter(AGE != "All ages") 
+
+#Mutate Male data so it will be negative on bargraph
+diseasesCircSystemData <- diseasesCircSystemData %>% mutate(NUMBER.OF.DEATHS = ifelse(GENDER == "Males", -1 * NUMBER.OF.DEATHS, NUMBER.OF.DEATHS))
+
+#Generate pyramid plot
+ ggplot(diseasesCircSystemData, aes(x = AGE, y = NUMBER.OF.DEATHS, fill = GENDER)) + 
+  geom_bar(data=diseasesCircSystemData[diseasesCircSystemData$GENDER == "Females",], stat = "identity") + 
+  geom_bar(data=diseasesCircSystemData[diseasesCircSystemData$GENDER == "Males",], stat = "identity") + 
+  scale_y_continuous(breaks = seq(-15000, 15000, 5000), 
+                     labels = paste0(as.character(c(seq(15, 0, -5), seq(5, 15, 5))), "")) +
+  coord_flip(ylim=c(-15000,15000)) + 
   scale_fill_brewer(palette = "Set1") + 
+  labs(title = "Number of people who die from Diseases of the circulatory system", y = "Number of deaths (1,000)", x = "Age", fill = "Gender") +
   theme_bw()
- 
- 
- 
- 
-ggplot(data2, aes(x = AGE, y = NUMBER.OF.DEATHS, fill = GENDER))+
-  geom_linerange(data = data2[data2$GENDER=="Males",], 
-                 aes(ymin = -0.3, ymax = -0.3+NUMBER.OF.DEATHS), size = 3.5, alpha = 0.8)+
-  geom_linerange(data = data2[data2$GENDER=="Females",], 
-                 aes(ymin = 0.3, ymax = 0.3+NUMBER.OF.DEATHS), size = 3.5, alpha = 0.8)+
-  geom_label(aes(x = AGE, y = 0, label = AGE), 
-         inherit.aes = F,
-         size = 3.5, label.padding = unit(0.0, "lines"), label.size = 0,
-         label.r = unit(0.0, "lines"), fill = "#EFF2F4", alpha = 0.9, color = "#5D646F")+
-  scale_y_continuous(breaks = c(c(-2, -1.5, -1, -0.5, 0) + -0.3, c(0, 0.5, 1, 1.5, 2)+0.3),
-                 labels = c("2", "1.5", "1", "0.5", "0", "0", "0.5", "1", "1.5", "2")) +
-  coord_flip() +
-  labs(title = "Title",
-   subtitle = "Subtitle")+
-  scale_color_manual(name = "", values = c(male = "#3E606F", female = "#8C3F4D"),
-                 labels = c("Label1", "Label2"))+
-  theme_minimal()+
-theme(text = element_text(color = "#3A3F4A"),
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.grid.major.x = element_line(linetype = "dotted", size = 0.3, color = "#3A3F4A"),
-    axis.title = element_blank(),
-    plot.title = element_text(face = "bold", size = 36, margin = margin(b = 10), hjust = 0.030),
-    plot.subtitle = element_text(size = 16, margin = margin(b = 20), hjust = 0.030),
-    plot.caption = element_text(size = 14, margin = margin(b = 10, t = 50), color = "#5D646F"),
-    axis.text.x = element_text(size = 12, color = "#5D646F"),
-    axis.text.y = element_blank(),
-    strip.text = element_text(color = "#5D646F", size = 18, face = "bold", hjust = 0.030),
-    plot.background = element_rect(fill = "#EFF2F4"),
-    plot.margin = unit(c(2, 2, 2, 2), "cm"),
-    legend.position = "top",
-    legend.margin  = unit(0.1, "lines"),
-    legend.text.align = 0)
 ```
 
 
