@@ -1,0 +1,212 @@
+---
+title: "HeartDisease"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Load packages
+```{r}
+#install.packages("summarytools")
+
+library(ggplot2)
+library(tidyverse)
+library(corrplot)
+library(caret)
+library(summarytools)
+```
+
+
+### Load the dataset
+```{r}
+data <- read.csv(file = "./data/heart.csv",sep = ",",header = T) 
+```
+
+
+### Analysing the data
+```{r}
+# Summary statistics (mean, sd, quantiles, max and min)
+data.summary <- summarytools::descr(data)[1:7,]
+
+# The first variable is loaded with a strange name. Let's correct that!
+names(data)[1] <- "age"
+
+# Are there missing values?
+data[!complete.cases(data),] 
+
+# Is the class variable balanced?
+table(data$target)
+
+# Visual inspection
+plot.age<- ggplot(data = data, aes(x = age ,fill=factor(target)))+
+  geom_histogram(bins = 30)+
+  labs(title="Age histogram",x="Years", y = "Count")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(fill = "Heart disease")
+plot.age
+
+plot.sex<- ggplot(data = data, aes(x = sex, fill=factor(target)))+
+  geom_histogram(bins = 3)+
+  labs(title="Sex histogram",x="Sex", y = "Count")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(fill = "Heart disease")
+plot.sex
+
+plot.cp<- ggplot(data = data, aes(x = cp, fill=factor(target)))+
+  geom_histogram(bins = 7)+
+  labs(title="Chest pain histogram",x="Pain level", y = "Count")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(fill = "Heart disease")
+plot.cp
+
+plot.trestbps<- ggplot(data = data, aes(x = trestbps, fill=factor(target)))+
+  geom_histogram(bins = 40)+
+  labs(title="Resting blood pressure histogram",x="mm Hg", y = "Count")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(fill = "Heart disease")
+plot.trestbps
+
+plot.chol<- ggplot(data = data, aes(x = chol, fill=factor(target)))+
+  geom_histogram(bins = 40)+
+  labs(title="Serum cholesterol histogram",x="mm/dl", y = "Count")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(fill = "Heart disease")
+plot.chol
+
+plot.fbs<- ggplot(data = data, aes(x = fbs, fill=factor(target)))+
+  geom_histogram(bins = 3)+
+  labs(title="Fasting blood sugar histogram",x="FBS > 120 mg/dl", y = "Count")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(fill = "Heart disease")
+plot.fbs
+
+plot.restecg<- ggplot(data = data, aes(x = restecg, fill=factor(target)))+
+  geom_histogram(bins = 5)+
+  labs(title="Resting electrocardiographic results histogram",x="Value", y = "Count")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(fill = "Heart disease")
+plot.restecg
+
+plot.thalach<- ggplot(data = data, aes(x = thalach, fill=factor(target)))+
+  geom_histogram(bins = 40)+
+  labs(title="Maximum heart rate achieved histogram",x="bpm", y = "Count")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(fill = "Heart disease")
+plot.thalach
+
+plot.exang<- ggplot(data = data, aes(x = exang, fill=factor(target)))+
+  geom_histogram(bins = 3)+
+  labs(title="Exercise induced angina histogram",x="Exang", y = "Count")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(fill = "Heart disease")
+plot.exang
+
+plot.oldpeak<- ggplot(data = data, aes(x = oldpeak, fill=factor(target)))+
+  geom_histogram(bins = 40)+
+  labs(title="Exercise systolic depression  histogram",x="Oldpeak", y = "Count")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(fill = "Heart disease")
+plot.oldpeak
+
+plot.slope<- ggplot(data = data, aes(x = slope, fill=factor(target)))+
+  geom_histogram(bins = 5)+
+  labs(title="Exercise ST segment slope histogram",x="Slope", y = "Count")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(fill = "Heart disease")
+plot.slope
+
+plot.ca<- ggplot(data = data, aes(x = ca, fill=factor(target)))+
+  geom_histogram(bins = 9)+
+  labs(title="Fluoroscopy coloured major vessels histogram",x="Ca", y = "Count")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(fill = "Heart disease")
+plot.ca
+
+plot.thal<- ggplot(data = data, aes(x = thal, fill=factor(target)))+
+  geom_histogram(bins = 7)+
+  labs(title="Thal histogram",x="Thal", y = "Count")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(fill = "Heart disease")
+plot.thal
+
+plot.target<- ggplot(data = data, aes(x = target, fill=factor(target)))+
+  geom_histogram(bins = 3)+
+  labs(title="Heart disease histogram",x="Presence of heart disease", y = "Count")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(fill = "Heart disease")
+plot.target
+
+
+```
+
+
+<!-- ```{r} -->
+<!-- data<-data %>% -->
+<!--   filter(restecg!=2) -->
+<!-- table(data$restecg) -->
+<!-- ``` -->
+
+
+### Variable normalization
+```{r}
+# Normalization function (min = 0, max = 1)
+normalize <- function(x) {
+return ((x - min(x)) / (max(x) - min(x)))
+}
+
+data$age <- normalize(data$age)
+data$cp <- normalize(data$cp)
+data$chol <- normalize(data$chol)
+data$trestbps <- normalize(data$trestbps)
+data$thalach <- normalize(data$thalach)
+data$oldpeak <- normalize(data$oldpeak)
+data$slope <- normalize(data$slope)
+data$ca <- normalize(data$ca)
+data$thal <- normalize(data$thal)
+```
+
+### Correlations
+```{r}
+# Correlation matrix
+cor.matrix <- cor(data)
+
+#Let's plot the correlations!
+cor.plot <- corrplot(cor.matrix, type = "upper", tl.col = "darkblue", tl.srt = 45)
+
+#How are the explanatory variables related with the target?
+cor.target <- as.data.frame(cor.matrix[,14])
+
+#Let's keep those with higher correlation coefficients!
+data2 <- data %>% 
+  select("sex","age","cp", "thalach", "exang","oldpeak","slope","ca","thal","target")
+```
+
+### Data split
+```{r}
+#We set a fixed seed to get the same result every time. 
+set.seed(42)
+
+#We shuffle the row indexes.
+rows <- sample(nrow(data2))
+data2.rnd <- data[rows, ]
+
+#Data split: 80% for training, 20% for testing. 
+ind <- createDataPartition(data2.rnd$target, p = 0.8, list = FALSE)
+train.data <- data2[ind,]
+test.data <- data2[-ind,]
+
+#Let's ensure that the class variable is balanced in both subdatasets!
+table(train.data$target)
+table(test.data$target)
+```
+
+
+
+
+
+
+
+
+
