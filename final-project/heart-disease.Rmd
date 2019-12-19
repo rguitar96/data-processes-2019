@@ -16,6 +16,7 @@ library(tidyverse)
 library(corrplot)
 library(caret)
 library(summarytools)
+library(e1071)
 ```
 
 
@@ -137,8 +138,6 @@ plot.target<- ggplot(data = data, aes(x = target, fill=factor(target)))+
   theme(plot.title = element_text(hjust = 0.5))+
   labs(fill = "Heart disease")
 plot.target
-
-
 ```
 
 
@@ -158,6 +157,7 @@ return ((x - min(x)) / (max(x) - min(x)))
 
 data$age <- normalize(data$age)
 data$cp <- normalize(data$cp)
+data$restecg <- normalize(data$restecg)
 data$chol <- normalize(data$chol)
 data$trestbps <- normalize(data$trestbps)
 data$thalach <- normalize(data$thalach)
@@ -176,14 +176,24 @@ cor.matrix <- cor(data)
 cor.plot <- corrplot(cor.matrix, type = "upper", tl.col = "darkblue", tl.srt = 45)
 
 #How are the explanatory variables related with the target?
-cor.target <- as.data.frame(cor.matrix[,14])
+cor.target <- as.data.frame(cor.matrix[,14]) 
+cor.target
+
+#Also, since the target variable is binary, let's make it categorical so that the classifiers do not think we are trying to perform a regression. 
+data$target <- as.factor(data$target)
 
 #Let's keep those with higher correlation coefficients!
+#data2 <- data %>% 
+#  select("sex","age","cp", "thalach", "exang","oldpeak","slope","ca","thal","target")
+
 data2 <- data %>% 
-  select("sex","age","cp", "thalach", "exang","oldpeak","slope","ca","thal","target")
+  select("cp", "thalach", "exang","oldpeak","slope","ca","thal","target")
+
+data2 <- data
+
 ```
 
-### Data split
+### Data split 
 ```{r}
 #We set a fixed seed to get the same result every time. 
 set.seed(42)
@@ -200,6 +210,25 @@ test.data <- data2[-ind,]
 #Let's ensure that the class variable is balanced in both subdatasets!
 table(train.data$target)
 table(test.data$target)
+```
+
+
+
+### kNN
+```{r}
+# Let's use 5-fold cross-validation!
+control <- trainControl(method  = "cv", number  = 5)
+
+# Training
+knn.model <- train(target ~ ., data = train.data, trControl = control, metric = "Accuracy", method = "knn", tuneGrid = expand.grid(k = 1:15))
+knn.model
+
+#Testing
+knn.pred <- predict(knn.model,test.data)
+
+#Confusion matrix
+confusionMatrix(test.data$target, knn.pred, positive = "1")
+
 ```
 
 

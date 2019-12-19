@@ -1,0 +1,72 @@
+**k-Nearest Neighbors - All variables**
+
+Resampling: Cross-Validated (5 fold)  
+Resampling results across tuning parameters:
+
+  k   Accuracy   Kappa    
+   1  0.7404762  0.4781629
+      ...
+   9  0.7903061  0.5723088
+      ...
+  15  0.7779762  0.5471361
+
+**The final value used for the model was k = 9.**
+
+Confusion Matrix and Statistics
+
+          Reference
+Prediction  0  1
+         0 19  8
+         1  4 29
+                                          
+**               Accuracy : 0.8 **               
+**                  Kappa : 0.5904 **         
+
+######################################################################################
+
+**k-Nearest Neighbors - Top 10 correlation variables**
+
+Resampling: Cross-Validated (5 fold) 
+Resampling results across tuning parameters:
+
+  k   Accuracy   Kappa    
+   1  0.7979320  0.5925754
+      ...
+   3  0.8310136  0.6600381
+      ...
+  15  0.7903469  0.5756428
+
+**The final value used for the model was k = 3.**
+Confusion Matrix and Statistics
+
+          Reference
+Prediction  0  1
+         0 20  7
+         1  5 28
+                                          
+**               Accuracy : 0.8             **    
+**                  Kappa : 0.5932   **
+
+######################################################################################
+
+** k-Nearest Neighbors - Top 8 correlation variables **
+Resampling: Cross-Validated (5 fold) 
+Resampling results across tuning parameters:
+
+  k   Accuracy   Kappa    
+   1  0.7898810  0.5734370
+      ...
+   5  0.8477891  0.6898555
+      ...
+  15  0.8188776  0.6303275
+
+**The final value used for the model was k = 5.**
+Confusion Matrix and Statistics
+
+          Reference
+Prediction  0  1
+         0 20  7
+         1  4 29
+                                          
+              ** Accuracy : 0.8167    **      
+                **  Kappa : 0.6259    **
