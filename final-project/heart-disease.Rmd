@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Load packages
 ```{r}
 #install.packages("summarytools")
+#install.packages("rattle")
 
 library(ggplot2)
 library(tidyverse)
@@ -17,6 +18,10 @@ library(corrplot)
 library(caret)
 library(summarytools)
 library(e1071)
+library(RSNNS)
+library(RWeka)
+library(rattle)
+#library(mlr)
 ```
 
 
@@ -148,6 +153,17 @@ plot.target
 <!-- ``` -->
 
 
+### Data randomization
+```{r}
+#We set a fixed seed to get the same result every time. 
+set.seed(42)
+
+#We shuffle the row indexes.
+rows <- sample(nrow(data))
+data <- data[rows, ]
+```
+
+
 ### Variable normalization
 ```{r}
 # Normalization function (min = 0, max = 1)
@@ -167,7 +183,7 @@ data$ca <- normalize(data$ca)
 data$thal <- normalize(data$thal)
 ```
 
-### Correlations
+### Correlations and dataset split
 ```{r}
 # Correlation matrix
 cor.matrix <- cor(data)
@@ -182,34 +198,33 @@ cor.target
 #Also, since the target variable is binary, let's make it categorical so that the classifiers do not think we are trying to perform a regression. 
 data$target <- as.factor(data$target)
 
+#Data for the classifier
+data.model.1 <- data
+
 #Let's keep those with higher correlation coefficients!
-#data2 <- data %>% 
-#  select("sex","age","cp", "thalach", "exang","oldpeak","slope","ca","thal","target")
-
-data2 <- data %>% 
+#Top 10
+data.model.2 <- data %>% 
+  select("age","sex","cp","thalach", "exang","oldpeak","slope","ca","thal","target")
+#Top 8
+data.model.3 <- data %>% 
   select("cp", "thalach", "exang","oldpeak","slope","ca","thal","target")
-
-data2 <- data
 
 ```
 
 ### Data split 
 ```{r}
-#We set a fixed seed to get the same result every time. 
 set.seed(42)
-
-#We shuffle the row indexes.
-rows <- sample(nrow(data2))
-data2.rnd <- data[rows, ]
-
 #Data split: 80% for training, 20% for testing. 
-ind <- createDataPartition(data2.rnd$target, p = 0.8, list = FALSE)
-train.data <- data2[ind,]
-test.data <- data2[-ind,]
+ind <- createDataPartition(data.model.1$target, p = 0.8, list = FALSE)
+train.data.1 <- data.model.1[ind,]
+test.data.1 <- data.model.1[-ind,]
 
-#Let's ensure that the class variable is balanced in both subdatasets!
-table(train.data$target)
-table(test.data$target)
+#We repeat the process for the other two datasets:
+train.data.2 <- data.model.2[ind,]
+test.data.2 <- data.model.2[-ind,]
+
+train.data.3 <- data.model.3[ind,]
+test.data.3 <- data.model.3[-ind,]
 ```
 
 
@@ -219,17 +234,99 @@ table(test.data$target)
 # Let's use 5-fold cross-validation!
 control <- trainControl(method  = "cv", number  = 5)
 
+# First dataset (all variables)
 # Training
-knn.model <- train(target ~ ., data = train.data, trControl = control, metric = "Accuracy", method = "knn", tuneGrid = expand.grid(k = 1:15))
-knn.model
+knn.model.1 <- caret::train(target ~ ., data = train.data.1, trControl = control, metric = "Accuracy", method = "knn", tuneGrid = expand.grid(k = 1:15))
+knn.model.1
 
 #Testing
-knn.pred <- predict(knn.model,test.data)
+knn.pred.1 <- predict(knn.model.1,test.data.1)
 
 #Confusion matrix
-confusionMatrix(test.data$target, knn.pred, positive = "1")
+caret::confusionMatrix(test.data.1$target, knn.pred.1, positive = "1")
+
+#We repeat the process for the two other datasets.
+knn.model.2 <- caret::train(target ~ ., data = train.data.2, trControl = control, metric = "Accuracy", method = "knn", tuneGrid = expand.grid(k = 1:15))
+knn.model.2
+knn.pred.2 <- predict(knn.model.2,test.data.2)
+caret::confusionMatrix(test.data.2$target, knn.pred.2, positive = "1")
+
+knn.model.3 <- caret::train(target ~ ., data = train.data.3, trControl = control, metric = "Accuracy", method = "knn", tuneGrid = expand.grid(k = 1:15))
+knn.model.3
+knn.pred.3 <- predict(knn.model.3,test.data.3)
+caret::confusionMatrix(test.data.3$target, knn.pred.3, positive = "1")
 
 ```
+
+### Multi-Layer Perceptron
+```{r}
+set.seed(42)
+# Let's use 5-fold cross-validation!
+control <- trainControl(method  = "cv", number  = 5)
+
+# First dataset (all variables)
+# Training
+mlp.model.1 <- caret::train(target ~ ., data = train.data.1, trControl = control, metric = "Accuracy", method = "mlp", tuneGrid = expand.grid(size = 1:15))
+mlp.model.1
+
+#Testing
+mlp.pred.1 <- predict(mlp.model.1,test.data.1)
+
+#Confusion matrix
+caret::confusionMatrix(test.data.1$target, mlp.pred.1, positive = "1")
+
+#We repeat the process for the two other datasets.
+mlp.model.2 <- caret::train(target ~ ., data = train.data.2, trControl = control, metric = "Accuracy", method = "mlp", tuneGrid = expand.grid(size = 1:15))
+mlp.model.2
+mlp.pred.2 <- predict(mlp.model.2,test.data.2)
+caret::confusionMatrix(test.data.2$target, mlp.pred.2, positive = "1")
+
+mlp.model.3 <- caret::train(target ~ ., data = train.data.3, trControl = control, metric = "Accuracy", method = "mlp", tuneGrid = expand.grid(size = 1:15))
+mlp.model.3
+mlp.pred.3 <- predict(mlp.model.3,test.data.3)
+caret::confusionMatrix(test.data.3$target, mlp.pred.3, positive = "1")
+```
+
+
+### Decision Tree
+```{r}
+set.seed(42)
+# Let's use 5-fold cross-validation!
+control <- trainControl(method  = "cv", number  = 5)
+
+# First dataset (all variables)
+# Training
+j48.model.1 <- caret::train(target ~ ., data = train.data.1, trControl = control, metric = "Accuracy", method = "J48", tuneGrid = expand.grid(C = seq(0.1, 0.5, by=0.05), M = 1:10))
+j48.model.1
+plot(j48.model.1)
+plot(j48.model.1$finalModel)
+
+#Testing
+j48.pred.1 <- predict(j48.model.1,test.data.1)
+
+#Confusion matrix
+caret::confusionMatrix(test.data.1$target, j48.pred.1, positive = "1")
+
+#We repeat the process for the two other datasets.
+j48.model.2 <- caret::train(target ~ ., data = train.data.2, trControl = control, metric = "Accuracy", method = "J48", tuneGrid = expand.grid(C = seq(0.1, 0.5, by=0.05), M = 1:10))
+j48.model.2
+plot(j48.model.2)
+plot(j48.model.2$finalModel)
+j48.pred.2 <- predict(j48.model.2,test.data.2)
+caret::confusionMatrix(test.data.2$target, j48.pred.2, positive = "1")
+
+j48.model.3 <- caret::train(target ~ ., data = train.data.3, trControl = control, metric = "Accuracy", method = "J48", tuneGrid = expand.grid(C = seq(0.1, 0.5, by=0.05), M = 1:10))
+j48.model.3
+plot(j48.model.3)
+plot(j48.model.3$finalModel)
+j48.pred.3 <- predict(j48.model.3,test.data.3)
+caret::confusionMatrix(test.data.3$target, j48.pred.3, positive = "1")
+
+```
+
+
+
+
 
 
 

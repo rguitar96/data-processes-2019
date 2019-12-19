@@ -1,0 +1,75 @@
+**Multi-Layer Perceptron - All variables**
+
+Resampling: Cross-Validated (5 fold) 
+Resampling results across tuning parameters:
+
+  size  Accuracy   Kappa    
+   1    0.8104320  0.6170522
+        ...
+  11    0.8435952  0.6832143
+        ...
+  15    0.8272619  0.6513841
+
+**The final value used for the model was size = 11.  **     
+
+Confusion Matrix and Statistics
+
+          Reference
+Prediction  0  1
+         0 19  8
+         1  6 27
+                                          
+               **Accuracy : 0.7667       **            
+                 ** Kappa : 0.5254**
+
+######################################################################################
+
+**Multi-Layer Perceptron - Top 10 correlation variables**
+
+Resampling: Cross-Validated (5 fold) 
+Resampling results across tuning parameters:
+
+  size  Accuracy   Kappa    
+   1    0.8517007  0.7004363
+        ...
+  14    0.8601190  0.7153485
+        ...
+  15    0.8558673  0.7079022
+
+**The final value used for the model was size = 14.**
+
+Confusion Matrix and Statistics
+
+          Reference
+Prediction  0  1
+         0 17  10
+         1  5 28
+                                         
+       **        Accuracy : 0.75    **         
+         **         Kappa : 0.4863 **
+
+######################################################################################
+
+** Multi-Layer Perceptron - Top 8 correlation variables **
+Resampling: Cross-Validated (5 fold) 
+Resampling results across tuning parameters:
+
+  size  Accuracy   Kappa    
+   1    0.8150510  0.6258412
+        ...
+  13    0.8438776  0.6852582
+        ...
+  15    0.8274660  0.6515201
+
+**The final value used for the model was size = 13.**
+
+Confusion Matrix and Statistics
+
+          Reference
+Prediction  0  1
+         0 18  9
+         1  8 25
+                                          
+ **              Accuracy : 0.7167   **                                                    
+   **               Kappa : 0.4257   **
+

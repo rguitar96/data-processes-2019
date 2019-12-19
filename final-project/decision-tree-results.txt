@@ -1,0 +1,115 @@
+**Decision Tree - All variables**
+
+C4.5-like Trees 
+
+Resampling: Cross-Validated (5 fold) 
+Resampling results across tuning parameters:
+
+  C     M   Accuracy   Kappa    
+  0.10   1  0.8109320  0.6159029
+            ...
+  0.35   5  0.8360986  0.6698707
+            ...
+  0.50  10  0.8315986  0.6602582
+
+**The final values used for the model were C = 0.35 and M = 5.**
+
+Confusion Matrix and Statistics
+
+          Reference
+Prediction  0  1
+         0 20  7
+         1  4 29
+                                          
+         **      Accuracy : 0.8167          **     
+         **         Kappa : 0.6259          **
+                                          
+######################################################################################
+
+**Decision Tree - Top 10 correlation variables**
+
+
+243 samples
+  9 predictor
+  2 classes: '0', '1' 
+
+No pre-processing
+Resampling: Cross-Validated (5 fold) 
+Summary of sample sizes: 193, 195, 195, 194, 195 
+Resampling results across tuning parameters:
+
+  C     M   Accuracy   Kappa    
+  0.10   1  0.8235136  0.6436859
+            ...
+  0.10   8  0.8399252  0.6759498
+            ...
+  0.50  10  0.8399252  0.6759498
+
+**The final values used for the model were C = 0.1 and M = 8.**
+
+Confusion Matrix and Statistics
+
+          Reference
+Prediction  0  1
+         0 18  9
+         1  4 29
+                                         
+**               Accuracy : 0.7833         **
+**                  Kappa : 0.5548         **
+                                         
+######################################################################################
+
+** Decision Tree - Top 8 correlation variables **
+ 
+C4.5-like Trees 
+
+243 samples
+  7 predictor
+  2 classes: '0', '1' 
+
+No pre-processing
+Resampling: Cross-Validated (5 fold) 
+Summary of sample sizes: 194, 194, 195, 194, 195 
+Resampling results across tuning parameters:
+
+  C     M   Accuracy   Kappa    
+  0.10   1  0.7900510  0.5749535
+            ...
+  0.15   9  0.8435374  0.6836145
+            ...
+  0.50  10  0.8435374  0.6836145
+
+Accuracy was used to select the optimal model using the largest value.
+The final values used for the model were C = 0.15 and M = 9.
+> plot(j48.model.3)
+> plot(j48.model.3$finalModel)
+> j48.pred.3 <- predict(j48.model.3,test.data.3)
+> caret::confusionMatrix(test.data.3$target, j48.pred.3, positive = "1")
+Confusion Matrix and Statistics
+
+          Reference
+Prediction  0  1
+         0 18  9
+         1  4 29
+                                         
+               Accuracy : 0.7833         
+                 95% CI : (0.658, 0.8793)
+    No Information Rate : 0.6333         
+    P-Value [Acc > NIR] : 0.009441       
+                                         
+                  Kappa : 0.5548         
+                                         
+ Mcnemar's Test P-Value : 0.267257       
+                                         
+            Sensitivity : 0.7632         
+            Specificity : 0.8182         
+         Pos Pred Value : 0.8788         
+         Neg Pred Value : 0.6667         
+             Prevalence : 0.6333         
+         Detection Rate : 0.4833         
+   Detection Prevalence : 0.5500         
+      Balanced Accuracy : 0.7907         
+                                         
+       'Positive' Class : 1          
+
+
