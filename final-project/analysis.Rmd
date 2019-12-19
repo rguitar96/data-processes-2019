@@ -11,6 +11,8 @@ library(treemapify)
 library(reshape2)
 library(plyr)
 library(tidyverse)
+library(plotly)
+library(maps)
 ```
 
 
@@ -65,19 +67,22 @@ head(usa_deaths)
 
 
 ```{r}
-ggplot(usa_deaths, aes(x=Year, y=Age.adjusted.Death.Rate, fill=Cause.Name)) + 
+area_plot <- ggplot(usa_deaths, aes(x=Year, y=Age.adjusted.Death.Rate, fill=Cause.Name)) + 
   labs(title = "Trend of death causes", x = "", y = "Death Rate / 100.000 (Age Adjusted)", fill = "Causes") +
   scale_color_brewer(palette = "Paired") +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme_minimal() +
   geom_area()
 
-ggplot(usa_deaths, aes(x=Year, y=log(Deaths), color=Cause.Name)) + 
+line_plot <- ggplot(usa_deaths, aes(x=Year, y=log(Deaths), color=Cause.Name)) + 
   labs(title = "Changes on death causes over the years", x = "", y = "log(Death Rate)", fill = "Causes") +
   scale_color_brewer(palette = "Paired") +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme_minimal() +
   geom_line() 
+
+ggplotly(area_plot)
+ggplotly(line_plot)
 ```
 
 
@@ -96,7 +101,38 @@ ggplot(topTenSpanishDiseases, aes(area=NUMBER.OF.DEATHS, fill=DISEASE, label=NUM
                     place = "centre",
                     grow = FALSE,
                     reflow = TRUE) 
+
 ```
+
+
+```{r}
+topTenSpanishDiseasesByGenre <- spain_deaths %>% filter(GENDER != "Both") %>% filter(DISEASE != "All causes") %>% filter(AGE == "All ages")      %>%  filter(DISEASE %in% topTenSpanishDiseases$DISEASE)
+
+topTenSpanishDiseasesByGenre$DISEASE  <- with(topTenSpanishDiseasesByGenre, reorder(DISEASE, NUMBER.OF.DEATHS))
+
+barplot <- ggplot(topTenSpanishDiseasesByGenre, aes(fill=DISEASE, y=NUMBER.OF.DEATHS, x=GENDER)) + 
+  scale_fill_brewer(palette = "Paired") +
+    geom_bar(position=position_stack(), stat="identity", width=0.4) +
+  labs(x="", y = "Number of deaths (2017)")+
+  theme_minimal()
+
+barplot
+
+ggplotly(barplot) %>% layout(bargap=0.1) #messes with the legend
+
+barplot <- ggplot(topTenSpanishDiseasesByGenre, aes(x=GENDER, y=NUMBER.OF.DEATHS, fill=DISEASE)) + 
+  geom_col(colour="black",width=0.3,    
+           position=position_stack()) +
+  scale_fill_brewer(palette = "Paired") +
+  labs(x="", y = "Number of deaths (2017)")+
+  theme_minimal()
+
+barplot
+
+ggplotly(barplot) %>% layout(legend = list()) #messes with the legend
+```
+
+
 
 ```{r}
 
@@ -117,7 +153,7 @@ summary(diseasesCircSystemData)
 diseasesCircSystemData <- diseasesCircSystemData %>% mutate(NUMBER.OF.DEATHS = ifelse(GENDER == "Males", -1 * NUMBER.OF.DEATHS, NUMBER.OF.DEATHS))
 
 #Generate pyramid plot
- ggplot(diseasesCircSystemData, aes(x = AGE, y = NUMBER.OF.DEATHS, fill = GENDER)) + 
+ggplot(diseasesCircSystemData, aes(x = AGE, y = NUMBER.OF.DEATHS, fill = GENDER)) + 
   geom_bar(data=diseasesCircSystemData[diseasesCircSystemData$GENDER == "Females",], stat = "identity") + 
   geom_bar(data=diseasesCircSystemData[diseasesCircSystemData$GENDER == "Males",], stat = "identity") + 
   scale_y_continuous(breaks = seq(-15000, 15000, 5000), 
@@ -130,7 +166,56 @@ diseasesCircSystemData <- diseasesCircSystemData %>% mutate(NUMBER.OF.DEATHS = i
 
 
 ```{r}
+unique(usa_deaths_states$State)
 ```
 
+
+
+```{r}
+unique(usa_deaths_states$Cause.Name)
+```
+
+
+```{r}
+data <- usa_deaths_states
+data <- usa_deaths_states %>% filter(Year == 2017) %>% filter(State != "United States")
+
+data <- left_join(data, aggregate(data$Deaths, by=list(State=data$State), FUN=sum), by="State")
+
+
+data <- data %>% filter(Year == 2017) %>% filter(State != "United States") %>% filter(Cause.Name == "Suicide")
+
+
+
+
+
+data$region <- tolower(data$State)
+
+states <- map_data("state")
+suicide_map <- left_join(states, data, by = "region")
+
+death_map <- ggplot(data = suicide_map) + 
+  geom_polygon(aes(x = long, y = lat, fill = Deaths/x, group = group), color = "white") + 
+  coord_fixed(1.3) +
+  labs(x="", y="") +
+  theme_void() +
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "white")) +
+    scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+  guides(fill=FALSE)  # do this to leave off the color legend
+
+death_adjusted_map <- ggplot(data = suicide_map) + 
+  geom_polygon(aes(x = long, y = lat, fill = Age.adjusted.Death.Rate, group = group), color = "white") + 
+  coord_fixed(1.3) +
+  labs(x="", y="") +
+  theme_void() +
+  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "white")) +
+    scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
+  guides(fill=FALSE)  # do this to leave off the color legend
+
+ggplotly(death_map)
+ggplotly(death_adjusted_map)
+```
 
 
