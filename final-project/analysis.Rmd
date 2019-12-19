@@ -1,3 +1,8 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
 ```{r}
 library(dplyr)
 library(ggplot2)
@@ -5,32 +10,44 @@ library(patchwork)
 library(treemapify)
 library(reshape2)
 library(plyr)
+library(tidyverse)
 ```
 
 
 ```{r}
-usa_deaths_states = read.csv("data/death-causes-usa.csv", sep=";")
+usa_deaths_states = read.csv("data/death-causes-usa.csv", sep=";") %>% filter(Cause.Name != "All causes")
 spain_deaths = read.csv("data/death-causes-spain-2017-modified.csv", sep=";",fileEncoding="UTF-8-BOM")
 ```
 
+USA data set
 
 
-USA dataset
+The data published by the Centers for Disease Control and Prevention was gathered by the National Center for Health Statistics (NCHS), with the last revision being made in 2017. This data set contains the information of the 10 leading causes of death in the United States. The data is based on information from resident death certificates filed in the 50 states and the District of Columbia using demographic and medical characteristics. The data set holds 10868 observations, each with the following 6 features:
+
+  * **Year**: The year the sample was taken
+  * **X113.Cause.Name**: Official labeled causes of death
+  * **Cause.Name**: Simplified cause of death name
+  * **State**: Name of the state the sample was taken. Inclues "United States" which is the total accross the entire country
+  * **Deaths**: The number of deaths due to the cause in the state in the given year
+  * **Age-adjusted-death-rate**: The death rate adjusted for the age range in the state the sample is from. The rates are per 100,000                                  population and based on the 2000 U.S. standard population.
 
 
-The data was published by the Centers for Disease Control and Prevention, gathered by the National Center for Health Statistics (NCHS) and last updated on 2017. This dataset presents the age-adjusted death rates for the 10 leading causes of death in the United States. The data is based on information from all resident death certificates filed in the 50 states and the District of Columbia using demographic and medical characteristics. Age-adjusted death rates (per 100,000 population) are based on the 2000 U.S. standard population.
-
-The information we will use in this dataset leaves us with 10868 observations and 6 columns (Year, Technical Cause Name, Cause Name, State, Deaths and Age-adjusted Death Rate).
 
 ```{r}
 dim(usa_deaths_states)
 head(usa_deaths_states)
 ```
 
-Spanish dataset
+Spanish data set
 
 
-Spanish data was found through a goverment webpage (datos.gob.es), and is part of a study done by the Spanish Institute of Statistics (INE), for the year 2017. We adapted the death causes in Spanish dataset to match the ones in the US one, as the Spanish dataset was more detailed (more details in the file disease-comparison.xlsx). After doing this, we see that the dataset has 1056 observations and 4 columns (Disease, Gender, Age and Number of Deaths).
+The second data set details the causes of death in Spain for the year 2017. It was found on the  government website, https://datos.gob.es/, although since the original project proposal is no longer available at the found location. This data was collected as  part of a study done by the Spanish Institute of Statistics (INE). Due to the layout of the data it was required to transform it so it could be processed. During this process the list of disease types were reduced by combining multiple of the same type to one so it was compared to the USA data set. An example of this is the Spanish data set has 30 types of cancer listed, while the USA set has 1, so the totals for the Spanish set were totaled under the name “Cancer”. The resulting data consists of 1056 observations with the following 4 features:
+
+	* **DISEASE**: Name of cause of death
+	* **GENDER**: The genender of the people represented by the observation, includes Males, Females and Both (total of both males and                 females)
+	* **AGE**: The age range of the people who died in the observation
+	* **NUMBER.OF.DEATHS**: The number of people that died
+
 
 
 ```{r}
@@ -39,16 +56,11 @@ head(spain_deaths)
 ```
 
 
-As we see, we have different data for both countries, so the comparison will be tough. We will first filter for the country data, filtering state data in the US dataset in order to view the country as a whole.
+As we see, we have different data for both countries, so the comparison will be tough. We will first filter for the country data, filtering state data in the US data set in order to view the country as a whole.
 
 ```{r}
-usa_deaths = usa_deaths_states %>% filter(State == "United States") %>% filter(Cause.Name != "All causes")
+usa_deaths = usa_deaths_states %>% filter(State == "United States")
 head(usa_deaths)
-```
-
-
-```{r}
-spain_deaths %>% filter(GENDER == "Both") %>% filter(AGE=="All ages") %>% View()
 ```
 
 
@@ -65,9 +77,8 @@ ggplot(usa_deaths, aes(x=Year, y=log(Deaths), color=Cause.Name)) +
   scale_color_brewer(palette = "Paired") +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme_minimal() +
-  geom_line()
+  geom_line() 
 ```
-
 
 
 ```{r}
@@ -95,9 +106,13 @@ diseasesCircSystemData <- spain_deaths
 #Set up AGE factor for pyramid plot
 diseasesCircSystemData$AGE <- factor(diseasesCircSystemData$AGE, c("0 to 1", "1 to 4", "5 to 9", "10 to 14", "15 to 19", "20 to 24", "25 to 29", "30 to 34", "35 to 39", "40 to 44", "45 to 49", "50 to 54", "55 to 59", "60 to 64", "65 to 69", "70 to 74", "75 to 79", "80 to 84", "85 to 89", "90 to 94", "95 or more", "All ages"))
 
-#Filter data to required 
-diseasesCircSystemData <- diseasesCircSystemData %>% filter(DISEASE == "Diseases of the circulatory system") %>% filter(GENDER != "Both") %>% filter(AGE != "All ages") 
+#Filter data to create table about only circular system disease 
+diseasesCircSystemData <- diseasesCircSystemData %>% filter(DISEASE == "Diseases of the circulatory system") %>% filter(GENDER != "Both") %>% filter(AGE != "All ages") %>% modify_at("DISEASE",~NULL)
 
+summary(diseasesCircSystemData)
+```
+
+```{r}
 #Mutate Male data so it will be negative on bargraph
 diseasesCircSystemData <- diseasesCircSystemData %>% mutate(NUMBER.OF.DEATHS = ifelse(GENDER == "Males", -1 * NUMBER.OF.DEATHS, NUMBER.OF.DEATHS))
 
