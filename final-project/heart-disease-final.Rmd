@@ -33,61 +33,154 @@ draw_confusion_matrix <- function(cmtrx) {
   res <- as.numeric(cmtrx$table)
   
   # Generate color gradients. Palettes come from RColorBrewer.
-  greenPalette <- c("#F7FCF5","#E5F5E0","#C7E9C0","#A1D99B","#74C476","#41AB5D","#238B45","#006D2C","#00441B")
-  redPalette <- c("#FFF5F0","#FEE0D2","#FCBBA1","#FC9272","#FB6A4A","#EF3B2C","#CB181D","#A50F15","#67000D")
+  greenPalette <-
+    c(
+      "#F7FCF5",
+      "#E5F5E0",
+      "#C7E9C0",
+      "#A1D99B",
+      "#74C476",
+      "#41AB5D",
+      "#238B45",
+      "#006D2C",
+      "#00441B"
+    )
+  redPalette <-
+    c(
+      "#FFF5F0",
+      "#FEE0D2",
+      "#FCBBA1",
+      "#FC9272",
+      "#FB6A4A",
+      "#EF3B2C",
+      "#CB181D",
+      "#A50F15",
+      "#67000D"
+    )
   
-  getColor <- function (greenOrRed = "green", amount = 0) {
-  if (amount == 0)
-    return("#FFFFFF")
+  getColor <- function (greenOrRed = "green",
+                        amount = 0) {
+    if (amount == 0)
+      return("#FFFFFF")
     palette <- greenPalette
-  if (greenOrRed == "red")
-    palette <- redPalette
+    if (greenOrRed == "red")
+      palette <- redPalette
     colorRampPalette(palette)(100)[10 + ceiling(90 * amount / total)]
   }
   
   # set the basic layout
-  layout(matrix(c(1,1,2)))
-  par(mar=c(2,2,2,2))
-  plot(c(100, 345), c(300, 450), type = "n", xlab="", ylab="", xaxt='n', yaxt='n')
-  title('CONFUSION MATRIX', cex.main=2)
+  layout(matrix(c(1, 1, 2)))
+  par(mar = c(2, 2, 2, 2))
+  plot(
+    c(100, 345),
+    c(300, 450),
+    type = "n",
+    xlab = "",
+    ylab = "",
+    xaxt = 'n',
+    yaxt = 'n'
+  )
+  title('CONFUSION MATRIX', cex.main = 2)
   
   # create the matrix
   classes = colnames(cmtrx$table)
-  rect(150, 430, 240, 370, col=getColor("green", res[1]))
-  text(195, 435, classes[1], cex=1.2)
-  rect(250, 430, 340, 370, col=getColor("red", res[3]))
-  text(295, 435, classes[2], cex=1.2)
-  text(125, 370, 'Predicted', cex=1.3, srt=90, font=2)
-  text(245, 450, 'Actual', cex=1.3, font=2)
-  rect(150, 305, 240, 365, col=getColor("red", res[2]))
-  rect(250, 305, 340, 365, col=getColor("green", res[4]))
-  text(140, 400, classes[1], cex=1.2, srt=90)
-  text(140, 335, classes[2], cex=1.2, srt=90)
+  rect(150, 430, 240, 370, col = getColor("green", res[1]))
+  text(195, 435, classes[1], cex = 1.2)
+  rect(250, 430, 340, 370, col = getColor("red", res[3]))
+  text(295, 435, classes[2], cex = 1.2)
+  text(125,
+       370,
+       'Predicted',
+       cex = 1.3,
+       srt = 90,
+       font = 2)
+  text(245, 450, 'Actual', cex = 1.3, font = 2)
+  rect(150, 305, 240, 365, col = getColor("red", res[2]))
+  rect(250, 305, 340, 365, col = getColor("green", res[4]))
+  text(140, 400, classes[1], cex = 1.2, srt = 90)
+  text(140, 335, classes[2], cex = 1.2, srt = 90)
   
   # add in the cmtrx results
-  text(195, 400, res[1], cex=1.6, font=2, col='white')
-  text(195, 335, res[2], cex=1.6, font=2, col='white')
-  text(295, 400, res[3], cex=1.6, font=2, col='white')
-  text(295, 335, res[4], cex=1.6, font=2, col='white')
+  text(195,
+       400,
+       res[1],
+       cex = 1.6,
+       font = 2,
+       col = 'white')
+  text(195,
+       335,
+       res[2],
+       cex = 1.6,
+       font = 2,
+       col = 'white')
+  text(295,
+       400,
+       res[3],
+       cex = 1.6,
+       font = 2,
+       col = 'white')
+  text(295,
+       335,
+       res[4],
+       cex = 1.6,
+       font = 2,
+       col = 'white')
   
   # add in the specifics
-  plot(c(100, 0), c(100, 0), type = "n", xlab="", ylab="", main = "DETAILS", xaxt='n', yaxt='n')
-  text(10, 85, names(cmtrx$byClass[1]), cex=1.2, font=2)
-  text(10, 70, round(as.numeric(cmtrx$byClass[1]), 3), cex=1.2)
-  text(30, 85, names(cmtrx$byClass[2]), cex=1.2, font=2)
-  text(30, 70, round(as.numeric(cmtrx$byClass[2]), 3), cex=1.2)
-  text(50, 85, names(cmtrx$byClass[5]), cex=1.2, font=2)
-  text(50, 70, round(as.numeric(cmtrx$byClass[5]), 3), cex=1.2)
-  text(70, 85, names(cmtrx$byClass[6]), cex=1.2, font=2)
-  text(70, 70, round(as.numeric(cmtrx$byClass[6]), 3), cex=1.2)
-  text(90, 85, names(cmtrx$byClass[7]), cex=1.2, font=2)
-  text(90, 70, round(as.numeric(cmtrx$byClass[7]), 3), cex=1.2)
+  plot(
+    c(100, 0),
+    c(100, 0),
+    type = "n",
+    xlab = "",
+    ylab = "",
+    main = "DETAILS",
+    xaxt = 'n',
+    yaxt = 'n'
+  )
+  text(10,
+       85,
+       names(cmtrx$byClass[1]),
+       cex = 1.2,
+       font = 2)
+  text(10, 70, round(as.numeric(cmtrx$byClass[1]), 3), cex = 1.2)
+  text(30,
+       85,
+       names(cmtrx$byClass[2]),
+       cex = 1.2,
+       font = 2)
+  text(30, 70, round(as.numeric(cmtrx$byClass[2]), 3), cex = 1.2)
+  text(50,
+       85,
+       names(cmtrx$byClass[5]),
+       cex = 1.2,
+       font = 2)
+  text(50, 70, round(as.numeric(cmtrx$byClass[5]), 3), cex = 1.2)
+  text(70,
+       85,
+       names(cmtrx$byClass[6]),
+       cex = 1.2,
+       font = 2)
+  text(70, 70, round(as.numeric(cmtrx$byClass[6]), 3), cex = 1.2)
+  text(90,
+       85,
+       names(cmtrx$byClass[7]),
+       cex = 1.2,
+       font = 2)
+  text(90, 70, round(as.numeric(cmtrx$byClass[7]), 3), cex = 1.2)
   
   # add in the accuracy information
-  text(30, 35, names(cmtrx$overall[1]), cex=1.5, font=2)
-  text(30, 20, round(as.numeric(cmtrx$overall[1]), 3), cex=1.4)
-  text(70, 35, names(cmtrx$overall[2]), cex=1.5, font=2)
-  text(70, 20, round(as.numeric(cmtrx$overall[2]), 3), cex=1.4)
+  text(30,
+       35,
+       names(cmtrx$overall[1]),
+       cex = 1.5,
+       font = 2)
+  text(30, 20, round(as.numeric(cmtrx$overall[1]), 3), cex = 1.4)
+  text(70,
+       35,
+       names(cmtrx$overall[2]),
+       cex = 1.5,
+       font = 2)
+  text(70, 20, round(as.numeric(cmtrx$overall[2]), 3), cex = 1.4)
 }
 ```
 
@@ -99,49 +192,141 @@ We load the file we got from the [Heart Disease Data Set](https://archive.ics.uc
 Even though it says that there are no nulls, we check to be sure.
 </div>
 ```{r}
-data <- read.csv(file = "./data/heart.csv",sep = ",",header = T)
+data <- read.csv(file = "./data/heart.csv", sep = ",", header = T)
 
 #We check for any NULL values
 sum(is.na(data))
 ```
 
 
-### Analysing the data
-<div style="text-align: justify">
-To begin simple analysis is performed on the data using bar graphs to determine patterns between having cardiovascular disease and  a person's age and gender.
-</div>
 
+
+## Preprocessing
+### Summary statistics (mean, sd, quantiles, max and min) and missing values
 ```{r}
-# Summary statistics (mean, sd, quantiles, max and min)
-data.summary <- summarytools::descr(data)[1:7,]
-
+data.summary <- summarytools::descr(data)[1:7, ]
+###
 # The first variable is loaded with a strange name. Let's correct that!
 names(data)[1] <- "age"
 
 # Are there missing values?
-data[!complete.cases(data),] 
+data[!complete.cases(data), ]
 
 # Is the class variable balanced?
 table(data$target)
 
-# Visual inspection
-plot.age <- ggplot(data = data, aes(x = age, fill = factor(target), colour = factor(target))) +
-  geom_histogram(bins = 40, position = "identity", alpha = 0.5)+
-  labs(title="Age histogram",x="Years", y = "Count")+
-  labs(fill = "Heart disease")+
-  scale_color_discrete(guide = F)+
+```
+### Visual inspection
+<div style="text-align: justify">
+To begin simple visual analys is performed on the data using bar graphs ang histograms to determine patterns in the data. For example, we can observe the variables age and sex.
+</div>
+```{r}
+# plot.trestbps <-
+# ggplot(data = data, aes(x = trestbps, fill = factor(target))) +
+# geom_histogram(bins = 40) +
+# labs(title = "Resting blood pressure histogram", x = "mm Hg", y = "Count") +
+# theme(plot.title = element_text(hjust = 0.5)) +
+# labs(fill = "Heart disease")
+# plot.trestbps
+#
+# plot.chol <-
+# ggplot(data = data, aes(x = chol, fill = factor(target))) +
+# geom_histogram(bins = 40) +
+# labs(title = "Serum cholesterol histogram", x = "mm/dl", y = "Count") +
+# theme(plot.title = element_text(hjust = 0.5)) +
+# labs(fill = "Heart disease")
+# plot.chol
+# 
+# plot.fbs <-
+# ggplot(data = data, aes(x = fbs, fill = factor(target))) +
+# geom_histogram(bins = 3) +
+# labs(title = "Fasting blood sugar histogram", x = "FBS > 120 mg/dl", y = "Count") +
+# theme(plot.title = element_text(hjust = 0.5)) +
+# labs(fill = "Heart disease")
+# plot.fbs
+# 
+# plot.restecg <-
+# ggplot(data = data, aes(x = restecg, fill = factor(target))) +
+# geom_histogram(bins = 5) +
+# labs(title = "Resting electrocardiographic results histogram", x = "Value", y = "Count") +
+# theme(plot.title = element_text(hjust = 0.5)) +
+# labs(fill = "Heart disease")
+# plot.restecg
+# 
+# plot.exang <-
+# ggplot(data = data, aes(x = exang, fill = factor(target))) +
+# geom_histogram(bins = 3) +
+# labs(title = "Exercise induced angina histogram", x = "Exang", y = "Count") +
+# theme(plot.title = element_text(hjust = 0.5)) +
+# labs(fill = "Heart disease")
+# plot.exang
+# 
+# plot.oldpeak <-
+# ggplot(data = data, aes(x = oldpeak, fill = factor(target))) +
+# geom_histogram(bins = 40) +
+# labs(title = "Exercise systolic depression  histogram", x = "Oldpeak", y = "Count") +
+# theme(plot.title = element_text(hjust = 0.5)) +
+# labs(fill = "Heart disease")
+# plot.oldpeak
+# 
+# plot.slope <-
+# ggplot(data = data, aes(x = slope, fill = factor(target))) +
+# geom_histogram(bins = 5) +
+# labs(title = "Exercise ST segment slope histogram", x = "Slope", y = "Count") +
+# theme(plot.title = element_text(hjust = 0.5)) +
+# labs(fill = "Heart disease")
+# plot.slope
+# 
+# plot.ca <-
+# ggplot(data = data, aes(x = ca, fill = factor(target))) +
+# geom_histogram(bins = 9) +
+# labs(title = "Fluoroscopy coloured major vessels histogram", x = "Ca", y = "Count") +
+# theme(plot.title = element_text(hjust = 0.5)) +
+# labs(fill = "Heart disease")
+# plot.ca
+# 
+# plot.thal <-
+# ggplot(data = data, aes(x = thal, fill = factor(target))) +
+# geom_histogram(bins = 7) +
+# labs(title = "Thal histogram", x = "Thal", y = "Count") +
+# theme(plot.title = element_text(hjust = 0.5)) +
+# labs(fill = "Heart disease")
+# plot.thal
+# 
+# plot.target <-
+# ggplot(data = data, aes(x = target, fill = factor(target))) +
+# geom_histogram(bins = 3) +
+# labs(title = "Heart disease histogram", x = "Presence of heart disease", y = "Count") +
+# theme(plot.title = element_text(hjust = 0.5)) +
+# labs(fill = "Heart disease")
+# plot.target
+
+
+plot.age <-
+  ggplot(data = data, aes(
+    x = age,
+    fill = factor(target),
+    colour = factor(target)
+  )) +
+  geom_histogram(bins = 40,
+                 position = "identity",
+                 alpha = 0.5) +
+  labs(title = "Age histogram", x = "Years", y = "Count") +
+  labs(fill = "Heart disease") +
+  scale_color_discrete(guide = F) +
   scale_fill_discrete(name = "Diagnosis", labels = c("Absent", "Present")) +
-  theme_minimal()+
+  theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
 plot.age
 
-plot.sex<- ggplot(data = data, aes(x = sex, fill=factor(target))) +
-  geom_histogram(bins = 3, position = "dodge")+
-  labs(title="Sex histogram",x="Sex", y = "Count")+
-  labs(fill = "Heart disease")+
-  scale_fill_discrete(name = "Diagnosis", labels = c("Absent", "Present"))+
-  scale_x_continuous(breaks = c(0,1), labels = c("Female","Male"))+
-  theme_minimal()+
+plot.sex <-
+  ggplot(data = data, aes(x = sex, fill = factor(target))) +
+  geom_histogram(bins = 3, position = "dodge") +
+  labs(title = "Sex histogram", x = "Sex", y = "Count") +
+  labs(fill = "Heart disease") +
+  scale_fill_discrete(name = "Diagnosis", labels = c("Absent", "Present")) +
+  scale_x_continuous(breaks = c(0, 1), labels = c("Female", "Male")) +
+  theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
 plot.sex
 
@@ -150,34 +335,40 @@ plot.sex
 <div style="text-align: justify">
 As can be seen be seen there is a dramatic change in the number of people being diagnosed with the disease around the age of 55 years, with those younger in age being more susceptible to the disease. Although this seems to contradict the first section of the report, where older people had a higher death rate due to the disease, this is most likely that younger people have a higher survival rate. Though further investigation would be required to determine this. 
 
-Then looking at the distribution of diagnoses based on gender, it is shown that females have a higher probability of contracting a heart disease. This corraborates the insights made with the previous data.
+Then looking at the distribution of diagnoses based on gender, it is shown that females have a higher probability of contracting a heart disease. This corraborates the insights made with the data from the Spain death causes dataset.
 </div>
 
-#### Looking at some factors
 <div style="text-align: justify">
-Next the features heart rate (BPM) and Chest Pain, which are likely to  have an influence on a person having the disease, are investigated. 
+Let's plot next the features heart rate (BPM) and Chest Pain, which are likely to  have an influence on a person having the disease. 
 </div>
 
 ```{r}
-plot.thalach<- ggplot(data = data, aes(x = thalach, fill=factor(target), colour = factor(target))) +
-  geom_histogram(bins = 40, position = "identity", alpha = 0.5)+
-  labs(title="Maximum heart rate achieved histogram",x="bpm", y = "Count")+
-  labs(fill = "Heart disease")+
-  scale_color_discrete(guide = F)+
+plot.thalach <-
+  ggplot(data = data, aes(
+    x = thalach,
+    fill = factor(target),
+    colour = factor(target)
+  )) +
+  geom_histogram(bins = 40,
+                 position = "identity",
+                 alpha = 0.5) +
+  labs(title = "Maximum heart rate achieved histogram", x = "bpm", y = "Count") +
+  labs(fill = "Heart disease") +
+  scale_color_discrete(guide = F) +
   scale_fill_discrete(name = "Diagnosis", labels = c("Absent", "Present")) +
-  theme_minimal()+
+  theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
 plot.thalach
 
-plot.cp<- ggplot(data = data, aes(x = cp, fill=factor(target)))+
-  geom_histogram(bins = 7)+
-  labs(title="Chest pain histogram",x="Pain level", y = "Count")+
-  labs(fill = "Heart disease")+
+plot.cp <-
+  ggplot(data = data, aes(x = cp, fill = factor(target))) +
+  geom_histogram(bins = 7) +
+  labs(title = "Chest pain histogram", x = "Pain level", y = "Count") +
+  labs(fill = "Heart disease") +
   scale_fill_discrete(name = "Diagnosis", labels = c("Absent", "Present")) +
-  theme_minimal()+
+  theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
 plot.cp
-
 
 ```
 <br>
@@ -185,29 +376,10 @@ plot.cp
 As can be seen in the plot above a subject with a higher value of BPM is more likely to have the presence of the disease, where having a rate of over 147 likely means it is present. The same can be seen in the chest pain chart. Where having a level of 0 is an indicator of no disease being present, but all higher levels being a strong indicator there is some level of infection.
 </div>
 
-### Correlations
-<div style="text-align: justify">
-To investigate the strength of the relationship between heart rate and pain level felt in the data set to the presence of heart disease, along with the other viariables, a correlation plot is used.
-</div>
-```{r}
-# Correlation matrix
-cor.matrix <- cor(data)
-
-#Let's plot the correlations!
-cor.plot <- corrplot(cor.matrix, type = "upper", tl.col = "darkblue", tl.srt = 45)
-
-#How are the explanatory variables related with the target?
-cor.target <- as.data.frame(cor.matrix[,14]) 
-cor.target
-```
-<div style="text-align: justify">
-As expected, both CP (chest pain) and Thalach (Max heart rate achieved) have a high correlation value. These along with “slope” are the values with the highest relationship with the target value. Though is can be perceived that there are high levels of correlation between the variables themselves. This multicollinearity is taken into account when selecting combinations of variables in the models.
-</div>
-
 ### Data randomization
 Before building the models for prediction a seed value is set to allow for randomisation of the data.
 ```{r}
-#We set a fixed seed to get the same result every time. 
+#We set a fixed seed to get the same result every time.
 set.seed(42)
 
 #We shuffle the row indexes.
@@ -221,7 +393,7 @@ Then a transformation to normalize the data is applied to obtain the best result
 ```{r}
 # Normalization function (min = 0, max = 1)
 normalize <- function(x) {
-return ((x - min(x)) / (max(x) - min(x)))
+  return ((x - min(x)) / (max(x) - min(x)))
 }
 
 data$age <- normalize(data$age)
@@ -237,68 +409,126 @@ data$thal <- normalize(data$thal)
 ```
 
 
+## Variable selection
+### Correlations
+<div style="text-align: justify">
+To investigate the strength of the relationship between heart rate and pain level felt in the data set to the presence of heart disease, along with the other variables, a correlation plot is used.
+</div>
+```{r}
+# Correlation matrix
+cor.matrix <- cor(data)
+
+#Let's plot the correlations!
+cor.plot <-
+  corrplot(cor.matrix,
+           type = "upper",
+           tl.col = "darkblue",
+           tl.srt = 45)
+
+#How are the explanatory variables related with the target?
+cor.target <- as.data.frame(cor.matrix[, 14])
+cor.target
+```
+<div style="text-align: justify">
+As expected, both CP (chest pain) and Thalach (Max heart rate achieved) have a high correlation value. These along with slope are the values with the highest relationship with the target value. Though it can be perceived that there are high levels of correlation between the variables themselves. This multicollinearity is taken into account when selecting combinations of variables in the models. We can see that the following variables have high Pearson correlation coefficients and could be useful for constructing the machine learning algorithms:</div>
+
+* age
+* sex
+* cp
+* thalach
+* exang
+* oldpeak
+* slop
+* ca
+* thal
+* target
+
+
 ### Linear Regression
 <div style="text-align: justify">
-The first attempt at prediction is done using a Linear Regression Model. First a model that uses all the available predictor values is attempted (lm.1). This returns poor results, as expected, with an R-squared value of 0.5175. This is followed by a model that uses all the interactions possible (lm.2). Which returns again poor but improved results with an R-squared value of 0.6782. Then finally a model (lm.3) with one with only those variables with a p-value lower than 0.05.Wich leads to a worse R-squared result of 0.5213.
+The first attempt at prediction is done using a Linear Regression Model. First a model that uses all the available predictor values is attempted (lm.1). This returns poor results, as expected, with an R-squared value of 0.5175. This is followed by a model that uses all the interactions possible (lm.2). Which returns again poor but improved results with an R-squared value of 0.6782. Then finally a model (lm.3) with one with only those variables and interactions with a p-value lower than 0.05.Wich leads to a worse R-squared result of 0.5213.
 </div>
 ```{r}
 # Linear model with additive variables
-lm.1<-lm(formula = target ~ ., data = data)
+lm.1 <- lm(formula = target ~ ., data = data)
 
 #Linear model with all interactions
-lm.2<-lm(formula = target ~ .*., data = data)
+lm.2 <- lm(formula = target ~ . * ., data = data)
 
 #Linear model with the meaningful variables and initeractions
-lm.3<-lm(formula = target ~ sex + cp + thalach + exang + oldpeak + slope +  ca + thal + cp:ca + ca:thal + thalach:thal, data = data)
+lm.3 <-
+  lm(
+    formula = target ~ sex + cp + thalach + exang + oldpeak + slope +  ca + thal + cp:ca + ca:thal + thalach:thal,
+    data = data
+  )
 summary(lm.1)
 summary(lm.2)
 summary(lm.3)
 ```
 <div style="text-align: justify">
-These low R-squared results are likely due to the multicollinearity observed in the correlation matrix, which reduces the quality of models using all the available variables.
+These low R-squared results are likely due to the multicollinearity observed in the correlation matrix, which reduces the quality of models using all the available variables. However, the variables with high Pearson correlation coefficients, except _age_, have been selected by the final linear model, which supports our decision of using that criteria for filtering variables.
 </div>
 
-### Subdatasets creation
+### Subdataset creation
 <div style="text-align: justify">
-Due to the target being binary it can be converted to a categorical variable so that the classifiers do not attempt regression. 
-</div>
+Due to the target being binary it can be converted to a categorical variable so that the classifiers do not attempt regression. We select a dataset with the variables selected with the correaltion and Linear
+Regression model approach.</div>
 ```{r}
 data$target <- as.factor(data$target)
 
 #Let's keep those with higher correlation coefficients!
 #Top 8
-data.model.1 <- data %>% 
-  select("sex","cp","thalach", "exang","oldpeak","slope","ca","thal","target")
+data.model.1 <- data %>%
+  select("sex",
+         "cp",
+         "thalach",
+         "exang",
+         "oldpeak",
+         "slope",
+         "ca",
+         "thal",
+         "target")
 ```
 
 ### Data split 
 The data is then split into training and testing sets to build and validate the regression models.
 ```{r}
 set.seed(42)
-#Data split: 80% for training, 20% for testing. 
-ind <- createDataPartition(data.model.1$target, p = 0.8, list = FALSE)
-train.data.1 <- data.model.1[ind,]
-test.data.1 <- data.model.1[-ind,]
+#Data split: 80% for training, 20% for testing.
+ind <-
+  createDataPartition(data.model.1$target, p = 0.8, list = FALSE)
+train.data.1 <- data.model.1[ind, ]
+test.data.1 <- data.model.1[-ind, ]
 ```
 
-
+## Machine Learning algorithms
 ### kNN
 <div style="text-align: justify">
 The next model deployed is a k-Nearest Neighbors. This is configured to use all variables with interaction. This is done using Cross-Validation (5-fold) to retrieve resampling. 
 </div>
+
 ```{r}
 # Let's use 5-fold cross-validation!
 control <- trainControl(method  = "cv", number  = 5)
 
 # Training (we set up the Grid to optimize the hyperparameter of the K)
-knn.model.1 <- caret::train(target ~ ., data = train.data.1, trControl = control, metric = "Accuracy", method = "knn", tuneGrid = expand.grid(k = 1:15))
+knn.model.1 <-
+  caret::train(
+    target ~ .,
+    data = train.data.1,
+    trControl = control,
+    metric = "Accuracy",
+    method = "knn",
+    tuneGrid = expand.grid(k = 1:15)
+  )
 knn.model.1
 
 #Testing
-knn.pred.1 <- predict(knn.model.1,test.data.1)
+knn.pred.1 <- predict(knn.model.1, test.data.1)
 
 #Confusion matrix
-cm.knn <- caret::confusionMatrix(test.data.1$target, knn.pred.1, positive = "1")
+cm.knn <-
+  caret::confusionMatrix(test.data.1$target, knn.pred.1, positive = "1")
 draw_confusion_matrix(cm.knn)
 ```
 <br>
@@ -308,6 +538,7 @@ Using a k value of 3 it can be seen in the confusion matrix generated above we c
 
 ### Multi-Layer Perceptron
 In an attempt to improve the results a Multi-layered Perceptron model is made, again with some Cross-Validation
+
 ```{r}
 set.seed(42)
 # Let's use 5-fold cross-validation!
@@ -323,10 +554,11 @@ mlp.pred.1 <- predict(mlp.model.1,test.data.1)
 #Confusion matrix
 cm.mlp <- caret::confusionMatrix(test.data.1$target, mlp.pred.1, positive = "1")
 draw_confusion_matrix(cm.mlp)
+
 ```
 <br>
 <div style="text-align: justify">
-The results using this model lead to higher precision and accuracy, but a lower sensitivity. However the number of false negatives (where a patient with the disease is predicted as being healthy) has been lowered, which due to this being a medical model is the most important parameter.r
+The results using this model lead to higher precision and accuracy, but a lower sensitivity. However the number of false negatives (where a patient with the disease is predicted as being healthy) has been lowered, which, due to this being a medical model, is of uttermost importance.
 </div>
 
 ### Decision Tree
@@ -338,29 +570,37 @@ set.seed(42)
 control <- trainControl(method  = "cv", number  = 5)
 
 # Training (we set up the Grid to optimize the hyperparameter of the conf threshold)
-j48.model.1 <- caret::train(target ~ ., data = train.data.1, trControl = control, metric = "Accuracy", method = "J48", tuneGrid = expand.grid(C = seq(0.1, 0.5, by=0.05), M = 1:10))
+j48.model.1 <-
+  caret::train(
+    target ~ .,
+    data = train.data.1,
+    trControl = control,
+    metric = "Accuracy",
+    method = "J48",
+    tuneGrid = expand.grid(C = seq(0.1, 0.5, by = 0.05), M = 1:10)
+  )
 j48.model.1
 plot(j48.model.1)
 plot(j48.model.1$finalModel)
 
 #Testing
-j48.pred.1 <- predict(j48.model.1,test.data.1)
+j48.pred.1 <- predict(j48.model.1, test.data.1)
 
 #Confusion matrix
-cm.dt <- caret::confusionMatrix(test.data.1$target, j48.pred.1, positive = "1")
+cm.dt <-
+  caret::confusionMatrix(test.data.1$target, j48.pred.1, positive = "1")
 draw_confusion_matrix(cm.dt)
 ```
 <br
 <div style="text-align: justify">
-The best hyperparameter were found to be C equal to 0.1 and M with value of 5. But as can be seen above the results have not improved with this model, so it will not be a better predictor than the other ones. 
+The best hyperparameter were found to be C (pruning confidence) equal to 0.1 and M (minimum number of instances) with value of 5. But as can be seen above the results have not improved with this model, so it will not be a better predictor than the other ones. 
 </div>
 
 ## Conclusion
+<div style="text-align: justify">As can be seen from the results above the models created are good estimators, with high precision and accuracy and decent sensitivity results. From the different models reviewed the Multi-Layered Perceptron was the clearly prefered method. This is due to not only it having better results, but less False Negative values in comparison to the other model. However, given that it is a black box and that decisions in medical contexts require of a strong rational supporting them, the Multi-Layer Perceptron should be backed by another algorithm, like a Decision Tree.</div> 
 
-<div style="text-align: justify">
-As can be seen from the results above the models created are good estimators, with high precision and accuracy and decent sensitivity results. From the different models reviewed the Multi-Layered Perceptron was the clearly prefered method. This is due to not only it having better results, but less False Negative values in comparison to the other model. 
+<div style="text-align: justify">To further improve these results a larger number of observations would be required. With the available data set having approximately 300 samples, the training and testing subsets could not have the sizes desired.</div>
 
-To further improve these results a larger number of observations would be required. With the available data set having approximately 300 samples, the training and testing subsets could not have the sizes desired.  
-</div>
-<br><br><br><br>
+
+
 

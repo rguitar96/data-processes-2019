@@ -68,7 +68,7 @@ In total we have 303 observations, supposedly without any null values. Some of t
 
 <div style="text-align: justify">The first part of this work is concerned with the analysis of the USA and Spain death causes datasets. This part of the project, including the variable analysis, how the plots have been constructed and comments on the insights gathered,  can be found [here](https://rguitar96.github.io/data-processes-2019/final-project/analysis). We have created a separated file to make this one more readable. However, we will addto this report  the most important graphics and conclusions.</div>
 
-<div style="text-align: justify">One of the first and most important parts of this section of the project was to do a god visualization of the data we had gathered, so we spent some time building a set of good looking graphs that would help us better comprehend what we were talking about. Some of this plots are the following: </div>
+<div style="text-align: justify">One of the first and most important parts of this section of the project was to do a good visualization of the data we had gathered, so we spent some time building a set of good looking graphs that would help us better comprehend what we were talking about. Some of this plots are the following: </div>
 
 ### Data from the American dataset
 <img src="./img/p1_i1.png" alt="Fig 1" width="50%"><img src="./img/p1_i2.png" alt="Fig 2" width="50%">
@@ -92,6 +92,8 @@ We analyzed the dataset and found that patterns found in the two previous ones a
 
 ### Variable selection
 <div style="text-align: justify">The first step was to decide which variables were of interest. Our first approach was to obtain the Pearson correlation coefficient between the explanatory variables and the target one (presence or not of cardiovascular disease). We selected as potential variables of interest the following ones:</div>
+
+  * age
   * sex
   * cp
   * thalach
@@ -100,11 +102,10 @@ We analyzed the dataset and found that patterns found in the two previous ones a
   * slop
   * ca
   * thal
-  * target
 
 <img src="./img/p2_i2.png" alt="Fig 5" width="80%">
 
-<div style="text-align: justify">In order to confirm that the selected variables would be useful, we proceeded to construct a Linear Regression model. We started by one which included all the variables in an additive manner. The second model included all the interactions. The final model was constructed based on the significant variables and interactions. It  included all of the selected variables except _age_, which supported our decision.</div> The formula used for the final Linear Regression model is: ftarget ~ sex + cp + thalach + exang + oldpeak + slope +  ca + thal + cp:ca + ca:thal + thalach:thal 
+<div style="text-align: justify">In order to confirm that the selected variables would be useful, we proceeded to construct a Linear Regression model. We started by one which included all the variables in an additive manner. The second model included all the interactions. The final model was constructed based on the significant variables and interactions. It  included all of the selected variables except _age_, which supported our decision.</div> The formula used for the final Linear Regression model is: target ~ sex + cp + thalach + exang + oldpeak + slope +  ca + thal + cp:ca + ca:thal + thalach:thal 
 
 
 ### Machine Learning algorithm
@@ -112,7 +113,7 @@ The next step was to test different machine learning algorithms able to predict 
 
   * k-Nearest Neighbors. Hyperparameters: number of nearest neighbors.
   * Multi-Layer Perceptron. Hyperparameters: size of the network.
-  * Decision Tree. Hhyperparameters: use or not of pruning, and pruning confidence level.
+  * Decision Tree. Hhyperparameters: minimum number of instances and pruning confidence level.
 
 <div style="text-align: justify">They all employed the variables that passed the correlation and Linear Regression test and were normalised before being fed to the classifiers. The dataset was split in two parts, training and testing, with respective percentages of 80% and 20%. The training of the algorithms was done using a 5-fold cross-validation approach. Again, the reader is referred to this [analysis](https://rguitar96.github.io/data-processes-2019/final-project/heart-disease-final) for the full process of data normalization, training and testing data split, hyperparameter tuning and final model selection. </div>
 
