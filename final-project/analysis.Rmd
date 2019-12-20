@@ -64,6 +64,7 @@ usa_deaths = usa_deaths_states %>% filter(State == "United States")
 head(usa_deaths)
 ```
 
+To investigate the causes of death over the available time frame in the USA we can use a line graph to track their trends over time. The logarithmic is taken of the death rate to better represent the data. As can be seen Heart disease and Cancer are the biggest killers for all years by a large margin. Although all causes show an increase in number this is not reflective of the true trend in death rates. By plotting the age adjusted rates it is shown that death rates due to these causes are decreasing. The reason for the larger number is most likely due to increases in population, though further investigation would be required. By using this plot can also be seen that deaths from Heart disease and Cancer are decreasing relative to the population. While Alzheimer’s disease and Suicides and Unintentional Accidents are increasing. It is fair to conclude that the increase in Alzheimer’s disease is most likely due to an aging population. Though for the other two causes further data would be required to make a conclusion on cause. 
 
 ```{r}
 area_plot <- ggplot(usa_deaths, aes(x=Year, y=Age.adjusted.Death.Rate, fill=Cause.Name)) + 
@@ -84,6 +85,7 @@ ggplotly(area_plot)
 ggplotly(line_plot)
 ```
 
+Next we can investigate the causes in death in spain. After removing the “Other causes” type from the dataset the counts of each cause are shown in a treemap. Similar to the USA dataset the main causes of death are heart disease (Diseases of the circulatory system) and cancer. Additionally Alzeimer’s disease ranks highly, fourth largest, showing it is also an issue in Spain. 
 
 ```{r}
 
@@ -104,6 +106,8 @@ ggplot(topTenSpanishDiseases, aes(area=NUMBER.OF.DEATHS, fill=DISEASE, label=NUM
 ```
 
 
+As the Spain data also has the data broken down by gender we use this in a bar graph to investigate the difference in cause of death between females and males.  As can be seen there are varying differences between how the two genders are affected by each disease. The difference in Alzhelmer’s can be explained by the fact that on average women live longer than men. But the reason for the differences in within the other causes is unknown (to the research group) and require further study. 
+
 ```{r}
 topTenSpanishDiseasesByGenre <- spain_deaths %>% filter(GENDER != "Both") %>% filter(DISEASE != "All causes") %>% filter(AGE == "All ages")      %>%  filter(DISEASE %in% topTenSpanishDiseases$DISEASE)
 
@@ -120,21 +124,9 @@ barplot
 #ggplotly(barplot) %>% layout(bargap=0.1) #messes with the legend
 ```
 
+For this report we have decided to investigate the causes of heart disease. Using the information available in the dataset we looked at the differences between the gender and age of those who died from the disease, plotted in a pyramid graph.
 
-
-```{r}
-
-#Create data frame to hold data about people who have Diseases of the circulatory system
-diseasesCircSystemData <- spain_deaths
-
-#Set up AGE factor for pyramid plot
-diseasesCircSystemData$AGE <- factor(diseasesCircSystemData$AGE, c("0 to 1", "1 to 4", "5 to 9", "10 to 14", "15 to 19", "20 to 24", "25 to 29", "30 to 34", "35 to 39", "40 to 44", "45 to 49", "50 to 54", "55 to 59", "60 to 64", "65 to 69", "70 to 74", "75 to 79", "80 to 84", "85 to 89", "90 to 94", "95 or more", "All ages"))
-
-#Filter data to create table about only circular system disease 
-diseasesCircSystemData <- diseasesCircSystemData %>% filter(DISEASE == "Diseases of the circulatory system") %>% filter(GENDER != "Both") %>% filter(AGE != "All ages") %>% modify_at("DISEASE",~NULL)
-
-summary(diseasesCircSystemData)
-```
+From the data available it can be easily determined that older women are more likely to die from heart disease, but we can gather no further insights. Further analysis of the causes is performed in part two of the report.
 
 ```{r}
 #Mutate Male data so it will be negative on bargraph
