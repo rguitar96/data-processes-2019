@@ -5,15 +5,14 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(cache = TRUE)
 ```
 
-### Load packages
-```{r}
-#install.packages("summarytools")
-#install.packages("rattle")
 
+### Load packages
+```{r, eval = F}
 library(ggplot2)
-library(tidyverse)
+library(dplyr)
 library(corrplot)
 library(caret)
 library(summarytools)
@@ -21,6 +20,7 @@ library(e1071)
 library(RSNNS)
 library(RWeka)
 library(rattle)
+library(partykit)
 #library(mlr)
 ```
 

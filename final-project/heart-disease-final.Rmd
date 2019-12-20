@@ -265,7 +265,7 @@ Now we will use the k-Nearest Neighbors to train and test the model with the cha
 # Let's use 5-fold cross-validation!
 control <- trainControl(method  = "cv", number  = 5)
 
-# Training
+# Training (we set up the Grid to optimize the hyperparameter of the K)
 knn.model.1 <- caret::train(target ~ ., data = train.data.1, trControl = control, metric = "Accuracy", method = "knn", tuneGrid = expand.grid(k = 1:15))
 knn.model.1
 
@@ -277,7 +277,7 @@ cm.knn <- caret::confusionMatrix(test.data.1$target, knn.pred.1, positive = "1")
 draw_confusion_matrix(cm.knn)
 ```
 <br>
-We can see the model is very precise and accurate, and also the sensitivity is higher than the specificity, which is exactly what we want when doing medical classification/prediction (since overlooking a patient who has a disease is problematic).
+Finally we get the best results with a k of 3, and we can see that the model is very precise and accurate. Also the sensitivity is higher than the specificity, which is exactly what we want when doing medical classification/prediction (since overlooking a patient who has a disease is problematic).
 
 ### Multi-Layer Perceptron
 This time we will try the Multi-layered Perceptron again with some Cross-Validation to see if we can get better results.
@@ -286,7 +286,7 @@ set.seed(42)
 # Let's use 5-fold cross-validation!
 control <- trainControl(method  = "cv", number  = 5)
 
-# Training
+# Training (we set up the Grid to optimize the hyperparameter of size)
 mlp.model.1 <- caret::train(target ~ ., data = train.data.1, trControl = control, metric = "Accuracy", method = "mlp", tuneGrid = expand.grid(size = 1:15))
 mlp.model.1
 
@@ -298,7 +298,7 @@ cm.mlp <- caret::confusionMatrix(test.data.1$target, mlp.pred.1, positive = "1")
 draw_confusion_matrix(cm.mlp)
 ```
 <br>
-This time the precision and accuracy have risen, but we get a lower sensitivity. However, overall we have reduced the number of false negatives (those instances where the patient has the disease but is predicted as healthy), which is the most important parameter.
+This time the precision and accuracy have risen, but we get a lower sensitivity. However, overall we have reduced the number of false negatives (those instances where the patient has the disease but is predicted as healthy), which is the most important parameter. This results have bet obtaining by using a size of 1 as the hyperparameter
 
 ### Decision Tree
 Finally, we decided to try to use a decission tree to try for a last time to improve the results.
@@ -307,7 +307,7 @@ set.seed(42)
 # Let's use 5-fold cross-validation!
 control <- trainControl(method  = "cv", number  = 5)
 
-# Training
+# Training (we set up the Grid to optimize the hyperparameter of the conf threshold)
 j48.model.1 <- caret::train(target ~ ., data = train.data.1, trControl = control, metric = "Accuracy", method = "J48", tuneGrid = expand.grid(C = seq(0.1, 0.5, by=0.05), M = 1:10))
 j48.model.1
 plot(j48.model.1)
@@ -321,7 +321,8 @@ cm.dt <- caret::confusionMatrix(test.data.1$target, j48.pred.1, positive = "1")
 draw_confusion_matrix(cm.dt)
 ```
 <br>
-Unfortunatelly, the results have not improved with this model, so it will not be a better predictor than the other ones.
+Unfortunatelly, the results have not improved with this model, so it will not be a better predictor than the other ones. The final hyperparameter values were C equal to 0.1 and 
+M with value of 5.
 
 ## Conclusion
 
