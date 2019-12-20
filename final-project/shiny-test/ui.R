@@ -6,7 +6,7 @@ dataset <- read.csv("data/death-causes-usa.csv", sep=";") %>% filter(State != "U
 
 fluidPage(
   
-  titlePanel("US death rates"),
+  mainPanel("US death rates"),
   
   sidebarPanel(
     
