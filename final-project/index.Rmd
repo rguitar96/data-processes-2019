@@ -14,18 +14,16 @@ We have done some research in the most common causes of death in the United Stat
 
 ## Introduction
 
-[EXPLAIN THE MOTIVATION FOR THE CHOSEN QUESTION]
+During the exploration of the datasets, it was seen that a small number of diseases were the greatest contributers to the death of individuals. Taking inspiration from the referenced projects, the work below describes the process answering the question "Can it be predicted if a person has a heart disease?". If possible this early detection will improve patient quality of life, by allowing health care professionals take action before more serious symptoms occur. Additionally early action should help treatment be more effective and lower costs.
 
 For inspiration, we have found the following articles and reports very interesting and helpful. 
-
-[IT'S SUPPOSED TO BE 5, WE HAVE 3]
 
 * [Data Brief - Mortality in the United States](https://www.cdc.gov/nchs/products/databriefs/db328.htm)
 * [Spain in numbers](https://www.ine.es/prodyser/espa_cifras/2018/34/)
 * [Towards Data Science - Heart Disease Prediction
 ](https://towardsdatascience.com/heart-disease-prediction-73468d630cfc)
-* []()
-* []()
+* [Improving the accuracy of prediction of heart disease risk based on ensemble classification techniques](https://www.sciencedirect.com/science/article/pii/S235291481830217X)
+* [International application of a new probability algorithm for the diagnosis of coronary artery disease](https://www.sciencedirect.com/science/article/abs/pii/0002914989905249)
   
 ## Datasets used
 
@@ -37,13 +35,13 @@ The data published by the Centers for Disease Control and Prevention was gathere
   * **Cause.Name**: Simplified cause of death name
   * **State**: Name of the state the sample was taken. Inclues "United States" which is the total accross the entire country
   * **Deaths**: The number of deaths due to the cause in the state in the given year
-  * **Age-adjusted-death-rate**: The death rate adjusted for the age range in the state the sample is from. The rates are per 100,000                                  population and based on the 2000 U.S. standard population.
+  * **Age-adjusted-death-rate**: The death rate adjusted for the age range in the state the sample is from. The rates are per 100,000 population and based on the 2000 U.S. standard population.
   
 * [Spain death causes Dataset](https://datos.gob.es/es/catalogo/ea0010587-defunciones-por-causas-lista-reducida-sexo-y-edad-nacional-estadistica-de-defunciones-segun-la-causa-de-muerte-identificador-api-t15-p417-a2017-l0-01001-px)
 The second data set details the causes of death in Spain for the year 2017. It was found on the  government website, https://datos.gob.es/, although since the original project proposal is no longer available at the found location. This data was collected as  part of a study done by the Spanish Institute of Statistics (INE). Due to the layout of the data it was required to transform it so it could be processed. During this process the list of disease types were reduced by combining multiple of the same type to one so it was compared to the USA data set. An example of this is the Spanish data set has 30 types of cancer listed, while the USA set has 1, so the totals for the Spanish set were totaled under the name “Cancer”. The resulting data consists of 1056 observations with the following 4 features:
 
 	* **DISEASE**: Name of cause of death
-	* **GENDER**: The genender of the people represented by the observation, includes Males, Females and Both (total of both males and                 females)
+	* **GENDER**: The genender of the people represented by the observation, includes Males, Females and Both (total of both males and females)
 	* **AGE**: The age range of the people who died in the observation
 	* **NUMBER.OF.DEATHS**: The number of people that died
 
@@ -63,15 +61,37 @@ This part of the project can be found [here](https://rguitar96.github.io/data-pr
 
 [INTRODUCE SOME OF THE GRAPHS, INCLUDING THE LAST ONE OF HEART DISEASES]
 
-Also here we can find a small visualization tool for the USA data.
+One of the first and most important parts of this section of the project was to do a god visualization of the data we had gathered, so we spent some time building a set of good looking graphs that would help us better comprehend what we were talking about. Some of this plots are the following: 
+
+**Data from the American dataset**<br>
+<img src="./img/p1_i1.png" alt="Fig 1" width="50%"><img src="./img/p1_i2.png" alt="Fig 2" width="50%">
+
+**Data from the Spanish dataset**<br>
+<img src="./img/p1_i4.png" alt="Fig 4" width="50%"><img src="./img/p1_i3.png" alt="Fig 3" width="50%">
+
+We soon found out that for both countries, one of the top death causes was Cardiovascular Disease, so we decided to focus our atention for the next part in this matter. 
+
+Whilst working with all the data, we started to test and created a small visualization tool to see the death count for the USA data divided in states and in the different causes.
 
 <iframe src="https://rguitar96.shinyapps.io/shiny-test/" style="border: 0px solid #AAA; height: 500px" width="100%"></iframe>
 
 ## Heart Disease prediction
 
-Once again we have separated the test results from this part to a separate report. However, the conclusions and final model chosen are displayed here:
+Once again we have separated the test results from this part to a separate report. 
 
-[AGAIN PUT THE CORRELATION AND CONFUSION MATRIX PICS HERE, AS WELL AS ADDING AN EXPLANATION]
+We analyzed the dataset and found that, as expected, it had the same data structure as the previous reports, that the female demographic was affected more by cardiovascular diseases.
+
+<img src="./img/p2_i1.png" alt="Fig 4" width="80%">
+
+The next part was analyzing the variables in the model to see which ones were more correlated both to the Target varible and to other ones, so we created this Correlation Matirx.
+
+<img src="./img/p2_i2.png" alt="Fig 5" width="80%">
+
+For the model, we tested some different methods, like Linear Models, k-Nearest Neighbor, Multi-layered perceptron and Decission Tree. After the training and testing was done and we got the results of all the posible hyperparameter combinations, we got the best model and its results:
+
+<img src="./img/p2_i3.png" alt="Fig 6" width="80%">
+
+We think that this model did a good job of predicting the Target vaiable and is fitting this context.
 
 ## Discussion and Future Work
 
