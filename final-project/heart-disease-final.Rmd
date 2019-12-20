@@ -5,15 +5,13 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+#knitr::opts_chunk$set(cache = TRUE)
 ```
 
 ### Load packages
-```{r}
-#install.packages("summarytools")
-#install.packages("rattle")
-
+```{r echo = T, results = 'hide'}
 library(ggplot2)
-library(tidyverse)
+library(dplyr)
 library(corrplot)
 library(caret)
 library(summarytools)
@@ -21,16 +19,92 @@ library(e1071)
 library(RSNNS)
 library(RWeka)
 library(rattle)
+library(partykit)
+```
+
+```{r, echo=F}
+#We load any functions we want to use
+
+#src: https://www.reddit.com/r/rstats/comments/c6lvg0/confusion_matrix_caret_plotting_superior_to_base/
+draw_confusion_matrix <- function(cmtrx) {
+  total <- sum(cmtrx$table)
+  res <- as.numeric(cmtrx$table)
+  
+  # Generate color gradients. Palettes come from RColorBrewer.
+  greenPalette <- c("#F7FCF5","#E5F5E0","#C7E9C0","#A1D99B","#74C476","#41AB5D","#238B45","#006D2C","#00441B")
+  redPalette <- c("#FFF5F0","#FEE0D2","#FCBBA1","#FC9272","#FB6A4A","#EF3B2C","#CB181D","#A50F15","#67000D")
+  
+  getColor <- function (greenOrRed = "green", amount = 0) {
+  if (amount == 0)
+    return("#FFFFFF")
+    palette <- greenPalette
+  if (greenOrRed == "red")
+    palette <- redPalette
+    colorRampPalette(palette)(100)[10 + ceiling(90 * amount / total)]
+  }
+  
+  # set the basic layout
+  layout(matrix(c(1,1,2)))
+  par(mar=c(2,2,2,2))
+  plot(c(100, 345), c(300, 450), type = "n", xlab="", ylab="", xaxt='n', yaxt='n')
+  title('CONFUSION MATRIX', cex.main=2)
+  
+  # create the matrix
+  classes = colnames(cmtrx$table)
+  rect(150, 430, 240, 370, col=getColor("green", res[1]))
+  text(195, 435, classes[1], cex=1.2)
+  rect(250, 430, 340, 370, col=getColor("red", res[3]))
+  text(295, 435, classes[2], cex=1.2)
+  text(125, 370, 'Predicted', cex=1.3, srt=90, font=2)
+  text(245, 450, 'Actual', cex=1.3, font=2)
+  rect(150, 305, 240, 365, col=getColor("red", res[2]))
+  rect(250, 305, 340, 365, col=getColor("green", res[4]))
+  text(140, 400, classes[1], cex=1.2, srt=90)
+  text(140, 335, classes[2], cex=1.2, srt=90)
+  
+  # add in the cmtrx results
+  text(195, 400, res[1], cex=1.6, font=2, col='white')
+  text(195, 335, res[2], cex=1.6, font=2, col='white')
+  text(295, 400, res[3], cex=1.6, font=2, col='white')
+  text(295, 335, res[4], cex=1.6, font=2, col='white')
+  
+  # add in the specifics
+  plot(c(100, 0), c(100, 0), type = "n", xlab="", ylab="", main = "DETAILS", xaxt='n', yaxt='n')
+  text(10, 85, names(cmtrx$byClass[1]), cex=1.2, font=2)
+  text(10, 70, round(as.numeric(cmtrx$byClass[1]), 3), cex=1.2)
+  text(30, 85, names(cmtrx$byClass[2]), cex=1.2, font=2)
+  text(30, 70, round(as.numeric(cmtrx$byClass[2]), 3), cex=1.2)
+  text(50, 85, names(cmtrx$byClass[5]), cex=1.2, font=2)
+  text(50, 70, round(as.numeric(cmtrx$byClass[5]), 3), cex=1.2)
+  text(70, 85, names(cmtrx$byClass[6]), cex=1.2, font=2)
+  text(70, 70, round(as.numeric(cmtrx$byClass[6]), 3), cex=1.2)
+  text(90, 85, names(cmtrx$byClass[7]), cex=1.2, font=2)
+  text(90, 70, round(as.numeric(cmtrx$byClass[7]), 3), cex=1.2)
+  
+  # add in the accuracy information
+  text(30, 35, names(cmtrx$overall[1]), cex=1.5, font=2)
+  text(30, 20, round(as.numeric(cmtrx$overall[1]), 3), cex=1.4)
+  text(70, 35, names(cmtrx$overall[2]), cex=1.5, font=2)
+  text(70, 20, round(as.numeric(cmtrx$overall[2]), 3), cex=1.4)
+}
 ```
 
 
 ### Load the dataset
+
+We load the file we got from the [Heart Disease Data Set](https://archive.ics.uci.edu/ml/datasets/Heart+Disease) of the Cleveland University.
+Even though it says that there are no nulls, we check to be sure.
 ```{r}
-data <- read.csv(file = "./data/heart.csv",sep = ",",header = T) 
+data <- read.csv(file = "./data/heart.csv",sep = ",",header = T)
+
+#We check for any NULL values
+sum(is.na(data))
 ```
 
 
 ### Analysing the data
+We start by doing a simple analysis of the dataset: we can see that we do not have any categorical variable to transform because the file was already transformed form the beggining. 
+
 ```{r}
 # Summary statistics (mean, sd, quantiles, max and min)
 data.summary <- summarytools::descr(data)[1:7,]
@@ -45,107 +119,77 @@ data[!complete.cases(data),]
 table(data$target)
 
 # Visual inspection
-plot.age<- ggplot(data = data, aes(x = age ,fill=factor(target)))+
-  geom_histogram(bins = 30)+
+plot.age <- ggplot(data = data, aes(x = age, fill = factor(target), colour = factor(target))) +
+  geom_histogram(bins = 40, position = "identity", alpha = 0.5)+
   labs(title="Age histogram",x="Years", y = "Count")+
-  theme(plot.title = element_text(hjust = 0.5))+
-  labs(fill = "Heart disease")
+  labs(fill = "Heart disease")+
+  scale_color_discrete(guide = F)+
+  scale_fill_discrete(name = "Diagnosis", labels = c("Absent", "Present")) +
+  theme_minimal()+
+  theme(plot.title = element_text(hjust = 0.5))
 plot.age
 
-plot.sex<- ggplot(data = data, aes(x = sex, fill=factor(target)))+
-  geom_histogram(bins = 3)+
+plot.sex<- ggplot(data = data, aes(x = sex, fill=factor(target))) +
+  geom_histogram(bins = 3, position = "dodge")+
   labs(title="Sex histogram",x="Sex", y = "Count")+
-  theme(plot.title = element_text(hjust = 0.5))+
-  labs(fill = "Heart disease")
+  labs(fill = "Heart disease")+
+  scale_fill_discrete(name = "Diagnosis", labels = c("Absent", "Present"))+
+  scale_x_continuous(breaks = c(0,1), labels = c("Female","Male"))+
+  theme_minimal()+
+  theme(plot.title = element_text(hjust = 0.5))
 plot.sex
+
+```
+<br>
+We can see that the people who are afflicted the least are those aged past 55 years, and that the majority of people who are diagnosed lie below that number.
+
+Looking at the distribution of the people who have been diagnosed in comparaison with their sex, we can see that females tend to suffer it more, which corraborates the reports we got in the previus phase.
+
+#### Looking at some factors
+We will take a look at some features that would logically be linked to the disease, like having higher BPM in the tests or the amount of pain reported afer them
+```{r}
+plot.thalach<- ggplot(data = data, aes(x = thalach, fill=factor(target), colour = factor(target))) +
+  geom_histogram(bins = 40, position = "identity", alpha = 0.5)+
+  labs(title="Maximum heart rate achieved histogram",x="bpm", y = "Count")+
+  labs(fill = "Heart disease")+
+  scale_color_discrete(guide = F)+
+  scale_fill_discrete(name = "Diagnosis", labels = c("Absent", "Present")) +
+  theme_minimal()+
+  theme(plot.title = element_text(hjust = 0.5))
+plot.thalach
 
 plot.cp<- ggplot(data = data, aes(x = cp, fill=factor(target)))+
   geom_histogram(bins = 7)+
   labs(title="Chest pain histogram",x="Pain level", y = "Count")+
-  theme(plot.title = element_text(hjust = 0.5))+
-  labs(fill = "Heart disease")
+  labs(fill = "Heart disease")+
+  scale_fill_discrete(name = "Diagnosis", labels = c("Absent", "Present")) +
+  theme_minimal()+
+  theme(plot.title = element_text(hjust = 0.5))
 plot.cp
 
-plot.trestbps<- ggplot(data = data, aes(x = trestbps, fill=factor(target)))+
-  geom_histogram(bins = 40)+
-  labs(title="Resting blood pressure histogram",x="mm Hg", y = "Count")+
-  theme(plot.title = element_text(hjust = 0.5))+
-  labs(fill = "Heart disease")
-plot.trestbps
 
-plot.chol<- ggplot(data = data, aes(x = chol, fill=factor(target)))+
-  geom_histogram(bins = 40)+
-  labs(title="Serum cholesterol histogram",x="mm/dl", y = "Count")+
-  theme(plot.title = element_text(hjust = 0.5))+
-  labs(fill = "Heart disease")
-plot.chol
-
-plot.fbs<- ggplot(data = data, aes(x = fbs, fill=factor(target)))+
-  geom_histogram(bins = 3)+
-  labs(title="Fasting blood sugar histogram",x="FBS > 120 mg/dl", y = "Count")+
-  theme(plot.title = element_text(hjust = 0.5))+
-  labs(fill = "Heart disease")
-plot.fbs
-
-plot.restecg<- ggplot(data = data, aes(x = restecg, fill=factor(target)))+
-  geom_histogram(bins = 5)+
-  labs(title="Resting electrocardiographic results histogram",x="Value", y = "Count")+
-  theme(plot.title = element_text(hjust = 0.5))+
-  labs(fill = "Heart disease")
-plot.restecg
-
-plot.thalach<- ggplot(data = data, aes(x = thalach, fill=factor(target)))+
-  geom_histogram(bins = 40)+
-  labs(title="Maximum heart rate achieved histogram",x="bpm", y = "Count")+
-  theme(plot.title = element_text(hjust = 0.5))+
-  labs(fill = "Heart disease")
-plot.thalach
-
-plot.exang<- ggplot(data = data, aes(x = exang, fill=factor(target)))+
-  geom_histogram(bins = 3)+
-  labs(title="Exercise induced angina histogram",x="Exang", y = "Count")+
-  theme(plot.title = element_text(hjust = 0.5))+
-  labs(fill = "Heart disease")
-plot.exang
-
-plot.oldpeak<- ggplot(data = data, aes(x = oldpeak, fill=factor(target)))+
-  geom_histogram(bins = 40)+
-  labs(title="Exercise systolic depression  histogram",x="Oldpeak", y = "Count")+
-  theme(plot.title = element_text(hjust = 0.5))+
-  labs(fill = "Heart disease")
-plot.oldpeak
-
-plot.slope<- ggplot(data = data, aes(x = slope, fill=factor(target)))+
-  geom_histogram(bins = 5)+
-  labs(title="Exercise ST segment slope histogram",x="Slope", y = "Count")+
-  theme(plot.title = element_text(hjust = 0.5))+
-  labs(fill = "Heart disease")
-plot.slope
-
-plot.ca<- ggplot(data = data, aes(x = ca, fill=factor(target)))+
-  geom_histogram(bins = 9)+
-  labs(title="Fluoroscopy coloured major vessels histogram",x="Ca", y = "Count")+
-  theme(plot.title = element_text(hjust = 0.5))+
-  labs(fill = "Heart disease")
-plot.ca
-
-plot.thal<- ggplot(data = data, aes(x = thal, fill=factor(target)))+
-  geom_histogram(bins = 7)+
-  labs(title="Thal histogram",x="Thal", y = "Count")+
-  theme(plot.title = element_text(hjust = 0.5))+
-  labs(fill = "Heart disease")
-plot.thal
-
-plot.target<- ggplot(data = data, aes(x = target, fill=factor(target)))+
-  geom_histogram(bins = 3)+
-  labs(title="Heart disease histogram",x="Presence of heart disease", y = "Count")+
-  theme(plot.title = element_text(hjust = 0.5))+
-  labs(fill = "Heart disease")
-plot.target
 ```
+<br>
+We can see that the higher the BPM, the higher the probability the patient has a heart problem. The same can be seen in the chest pain chart, where the higher the pain, the higher the chance the patient is positively diagnosed. This will cause a positive correlation, which we can see below.
 
+### Correlations
+We will plot the correlation for all the variables.
+```{r}
+# Correlation matrix
+cor.matrix <- cor(data)
+
+#Let's plot the correlations!
+cor.plot <- corrplot(cor.matrix, type = "upper", tl.col = "darkblue", tl.srt = 45)
+
+#How are the explanatory variables related with the target?
+cor.target <- as.data.frame(cor.matrix[,14]) 
+cor.target
+```
+As expected, both CP (chest pain) and Thalach (Max heart rate achieved) have a high correlation value, but we can also see other variables affecting the target variable.
+However, we also see one problem: we can percive some variables with high correlation values between eachother too. This multicollinearity can lead to some problems when trying to use this pairs of variables in the same model and should be taken into account.
 
 ### Data randomization
+Now we will randomize the data (with a set seed) to work on the data models and predictions.
 ```{r}
 #We set a fixed seed to get the same result every time. 
 set.seed(42)
@@ -157,6 +201,7 @@ data <- data[rows, ]
 
 
 ### Variable normalization
+We will also normalize all the values obtain the best results.
 ```{r}
 # Normalization function (min = 0, max = 1)
 normalize <- function(x) {
@@ -175,36 +220,27 @@ data$ca <- normalize(data$ca)
 data$thal <- normalize(data$thal)
 ```
 
-### Correlations
-```{r}
-# Correlation matrix
-cor.matrix <- cor(data)
-
-#Let's plot the correlations!
-cor.plot <- corrplot(cor.matrix, type = "upper", tl.col = "darkblue", tl.srt = 45)
-
-#How are the explanatory variables related with the target?
-cor.target <- as.data.frame(cor.matrix[,14]) 
-cor.target
-```
-
 
 ### Linear Regression
+The first model we decided to try was the Linear Regression Model, as it's the most simple one to test and train. We will first use it wothout removing any variables (lm.1), then with all the interactions posible (lm.2) and finally with one with only those variables with lower that 0.05 p-values in the first model (lm.3), 
 ```{r}
 # Linear model with additive variables
 lm.1<-lm(formula = target ~ ., data = data)
+
 #Linear model with all interactions
 lm.2<-lm(formula = target ~ .*., data = data)
+
 #Linear model with the meaningful variables and initeractions
 lm.3<-lm(formula = target ~ sex + cp + thalach + exang + oldpeak + slope +  ca + thal + cp:ca + ca:thal + thalach:thal, data = data)
 summary(lm.1)
 summary(lm.2)
 summary(lm.3)
 ```
+We still get results of low R-squared values, which could be atributed to the multicollinearity we previously observed in the correlation matrix which makes models with all the variables worse.
 
 ### Subdatasets creation
+Since the target variable is binary, let's make it categorical so that the classifiers do not think we are trying to perform a regression. 
 ```{r}
-#Since the target variable is binary, let's make it categorical so that the classifiers do not think we are trying to perform a regression. 
 data$target <- as.factor(data$target)
 
 #Let's keep those with higher correlation coefficients!
@@ -224,6 +260,7 @@ test.data.1 <- data.model.1[-ind,]
 
 
 ### kNN
+Now we will use the k-Nearest Neighbors to train and test the model with the changes we did in the previos steps. We will also use Cross-Validation (5-fold) to get some resampling.
 ```{r}
 # Let's use 5-fold cross-validation!
 control <- trainControl(method  = "cv", number  = 5)
@@ -236,10 +273,14 @@ knn.model.1
 knn.pred.1 <- predict(knn.model.1,test.data.1)
 
 #Confusion matrix
-caret::confusionMatrix(test.data.1$target, knn.pred.1, positive = "1")
+cm.knn <- caret::confusionMatrix(test.data.1$target, knn.pred.1, positive = "1")
+draw_confusion_matrix(cm.knn)
 ```
+<br>
+We can see the model is very precise and accurate, and also the sensitivity is higher than the specificity, which is exactly what we want when doing medical classification/prediction (since overlooking a patient who has a disease is problematic).
 
 ### Multi-Layer Perceptron
+This time we will try the Multi-layered Perceptron again with some Cross-Validation to see if we can get better results.
 ```{r}
 set.seed(42)
 # Let's use 5-fold cross-validation!
@@ -253,11 +294,14 @@ mlp.model.1
 mlp.pred.1 <- predict(mlp.model.1,test.data.1)
 
 #Confusion matrix
-caret::confusionMatrix(test.data.1$target, mlp.pred.1, positive = "1")
+cm.mlp <- caret::confusionMatrix(test.data.1$target, mlp.pred.1, positive = "1")
+draw_confusion_matrix(cm.mlp)
 ```
-
+<br>
+This time the precision and accuracy have risen, but we get a lower sensitivity. However, overall we have reduced the number of false negatives (those instances where the patient has the disease but is predicted as healthy), which is the most important parameter.
 
 ### Decision Tree
+Finally, we decided to try to use a decission tree to try for a last time to improve the results.
 ```{r}
 set.seed(42)
 # Let's use 5-fold cross-validation!
@@ -273,18 +317,16 @@ plot(j48.model.1$finalModel)
 j48.pred.1 <- predict(j48.model.1,test.data.1)
 
 #Confusion matrix
-caret::confusionMatrix(test.data.1$target, j48.pred.1, positive = "1")
+cm.dt <- caret::confusionMatrix(test.data.1$target, j48.pred.1, positive = "1")
+draw_confusion_matrix(cm.dt)
 ```
+<br>
+Unfortunatelly, the results have not improved with this model, so it will not be a better predictor than the other ones.
 
+## Conclusion
 
+Overall, the biggest problem we are faced in this case is the lack of more data to do the training and testing, because only ~300 samples is a really low number. 
+However, we can say that the models that we have created are good estimators, with high precision and accuracy, as well as decent sensitivity values. The best model however would be the Multi-Layered Perceptron, because it is the one with better results and has the same or less False Negative values in comparaison to the other models.  
 
-
-
-
-
-
-
-
-
-
+<br><br><br><br>
 
