@@ -10,15 +10,19 @@ library(patchwork)
 library(treemapify)
 library(reshape2)
 library(plyr)
-library(tidyverse)
+library(tidyverse) 
 library(plotly)
 library(maps)
 ```
 
 
 ```{r}
-usa_deaths_states = read.csv("data/death-causes-usa.csv", sep=";") %>% filter(Cause.Name != "All causes")
-spain_deaths = read.csv("data/death-causes-spain-2017-modified.csv", sep=";",fileEncoding="UTF-8-BOM")
+usa_deaths_states = read.csv("data/death-causes-usa.csv", sep = ";") %>% filter(Cause.Name != "All causes")
+spain_deaths = read.csv(
+  "data/death-causes-spain-2017-modified.csv",
+  sep = ";",
+  fileEncoding = "UTF-8-BOM"
+)
 ```
 
 ### USA Deaths Dataset
@@ -73,19 +77,32 @@ To investigate the causes of death over the available time frame in the USA we c
 </div>
 
 ```{r}
-area_plot <- ggplot(usa_deaths, aes(x=Year, y=Age.adjusted.Death.Rate, fill=Cause.Name)) + 
-  labs(title = "Trend of death causes", x = "", y = "Death Rate / 100.000 (Age Adjusted)", fill = "Causes") +
+area_plot <-
+  ggplot(usa_deaths,
+         aes(x = Year, y = Age.adjusted.Death.Rate, fill = Cause.Name)) +
+  labs(title = "Trend of death causes",
+       x = "",
+       y = "Death Rate / 100.000 (Age Adjusted)",
+       fill = "Causes") +
   scale_color_brewer(palette = "Paired") +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme_minimal() +
   geom_area()
 
-line_plot <- ggplot(usa_deaths, aes(x=Year, y=log(Deaths), color=Cause.Name)) + 
-  labs(title = "Changes on death causes over the years", x = "", y = "log(Death Rate)", fill = "Causes") +
+line_plot <-
+  ggplot(usa_deaths, aes(
+    x = Year,
+    y = log(Deaths),
+    color = Cause.Name
+  )) +
+  labs(title = "Changes on death causes over the years",
+       x = "",
+       y = "log(Death Rate)",
+       fill = "Causes") +
   scale_color_brewer(palette = "Paired") +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme_minimal() +
-  geom_line() 
+  geom_line()
 
 ggplotly(area_plot)
 ggplotly(line_plot)
@@ -98,34 +115,48 @@ Next we can investigate the causes in death in spain. After removing the “Othe
 ```{r}
 
 #Get data about the top 10 diseases in the Spanish data set. Ignore "Other causes"
-topTenSpanishDiseases<- spain_deaths %>% filter(GENDER == "Both") %>% filter(AGE=="All ages") %>% filter(DISEASE!="All causes") %>% filter(DISEASE!="Other causes") %>% top_n(10, NUMBER.OF.DEATHS)
+topTenSpanishDiseases <-
+  spain_deaths %>% filter(GENDER == "Both") %>% filter(AGE == "All ages") %>% filter(DISEASE !=
+                                                                                       "All causes") %>% filter(DISEASE != "Other causes") %>% top_n(10, NUMBER.OF.DEATHS)
 
 #Generate tree map
-ggplot(topTenSpanishDiseases, aes(area=NUMBER.OF.DEATHS, fill=DISEASE, label=NUMBER.OF.DEATHS)) +
+ggplot(
+  topTenSpanishDiseases,
+  aes(area = NUMBER.OF.DEATHS, fill = DISEASE, label = NUMBER.OF.DEATHS)
+) +
   scale_fill_brewer(palette = "Paired") +
   labs(title = "Most deadly diseases in Spain (2017)", fill = "Causes") +
   geom_treemap() +
-  geom_treemap_text(fontface = "italic",
-                    colour = "white",
-                    place = "centre",
-                    grow = FALSE,
-                    reflow = TRUE) 
+  geom_treemap_text(
+    fontface = "italic",
+    colour = "white",
+    place = "centre",
+    grow = FALSE,
+    reflow = TRUE
+  ) 
 
 ```
 
 <div style="text-align: justify">
-As the Spain data also has the data broken down by gender we use this in a bar graph to investigate the difference in cause of death between females and males.  As can be seen there are varying differences between how the two genders are affected by each disease. The difference in Alzhelmer’s can be explained by the fact that on average women live longer than men. But the reason for the differences in within the other causes is unknown (to the research group) and require further study. 
+As the Spanish dataset also is broken down by gender we use this in a bar graph to investigate the difference in cause of death between females and males. As can be seen there are varying differences between how the two genders are affected by each disease. The difference in Alzhelmer’s can be explained by the fact that on average women live longer than men. But the reason for the differences in within the other causes is unknown (to the research group) and require further study. 
 </div>
 
 ```{r}
-topTenSpanishDiseasesByGenre <- spain_deaths %>% filter(GENDER != "Both") %>% filter(DISEASE != "All causes") %>% filter(AGE == "All ages")      %>%  filter(DISEASE %in% topTenSpanishDiseases$DISEASE)
+topTenSpanishDiseasesByGenre <-
+  spain_deaths %>% filter(GENDER != "Both") %>% filter(DISEASE != "All causes") %>% filter(AGE == "All ages")      %>%  filter(DISEASE %in% topTenSpanishDiseases$DISEASE)
 
-topTenSpanishDiseasesByGenre$DISEASE  <- with(topTenSpanishDiseasesByGenre, reorder(DISEASE, NUMBER.OF.DEATHS))
+topTenSpanishDiseasesByGenre$DISEASE  <-
+  with(topTenSpanishDiseasesByGenre,
+       reorder(DISEASE, NUMBER.OF.DEATHS))
 
-barplot <- ggplot(topTenSpanishDiseasesByGenre, aes(fill=DISEASE, y=NUMBER.OF.DEATHS, x=GENDER)) + 
+barplot <-
+  ggplot(topTenSpanishDiseasesByGenre,
+         aes(fill = DISEASE, y = NUMBER.OF.DEATHS, x = GENDER)) +
   scale_fill_brewer(palette = "Paired") +
-    geom_bar(position=position_stack(), stat="identity", width=0.4) +
-  labs(x="", y = "Number of deaths (2017)")+
+  geom_bar(position = position_stack(),
+           stat = "identity",
+           width = 0.4) +
+  labs(x = "", y = "Number of deaths (2017)") +
   theme_minimal()
 
 barplot
@@ -134,9 +165,9 @@ barplot
 ```
 
 <div style="text-align: justify">
-For this report we have decided to investigate the causes of heart disease. Using the information available in the dataset we looked at the differences between the gender and age of those who died from the disease, plotted in a pyramid graph.
+For this report we have decided to investigate the causes of heart disease, as we saw that it is the second death cause. Using the information available in the dataset we looked at the differences between the gender and age of those who died from the disease, plotted in a pyramid graph.
 
-From the data available it can be easily determined that older women are more likely to die from heart disease, but we can gather no further insights. Further analysis of the causes is performed in part two of the report.
+From the data available it can be easily determined that older women are more likely to die from heart disease, whereas younger men are more likely that women of their age. However, we can gather no further insights from this data. Further analysis of the causes is performed in part two of the report.
 </div>
 
 ```{r}
@@ -144,27 +175,63 @@ From the data available it can be easily determined that older women are more li
 diseasesCircSystemData <- spain_deaths
 
 #Set up AGE factor for pyramid plot
-diseasesCircSystemData$AGE <- factor(diseasesCircSystemData$AGE, c("0 to 1", "1 to 4", "5 to 9", "10 to 14", "15 to 19", "20 to 24", "25 to 29", "30 to 34", "35 to 39", "40 to 44", "45 to 49", "50 to 54", "55 to 59", "60 to 64", "65 to 69", "70 to 74", "75 to 79", "80 to 84", "85 to 89", "90 to 94", "95 or more", "All ages"))
+diseasesCircSystemData$AGE <-
+  factor(
+    diseasesCircSystemData$AGE,
+    c(
+      "0 to 1",
+      "1 to 4",
+      "5 to 9",
+      "10 to 14",
+      "15 to 19",
+      "20 to 24",
+      "25 to 29",
+      "30 to 34",
+      "35 to 39",
+      "40 to 44",
+      "45 to 49",
+      "50 to 54",
+      "55 to 59",
+      "60 to 64",
+      "65 to 69",
+      "70 to 74",
+      "75 to 79",
+      "80 to 84",
+      "85 to 89",
+      "90 to 94",
+      "95 or more",
+      "All ages"
+    )
+  )
 
-#Filter data to create table about only circular system disease 
-diseasesCircSystemData <- diseasesCircSystemData %>% filter(DISEASE == "Diseases of the circulatory system") %>% filter(GENDER != "Both") %>% filter(AGE != "All ages") %>% modify_at("DISEASE",~NULL)
+#Filter data to create table about only circular system disease
+diseasesCircSystemData <-
+  diseasesCircSystemData %>% filter(DISEASE == "Diseases of the circulatory system") %>% filter(GENDER != "Both") %>% filter(AGE != "All ages") %>% modify_at("DISEASE",  ~
+                                                                                                                                                                NULL)
 
 summary(diseasesCircSystemData)
 ```
 
 ```{r}
 #Mutate Male data so it will be negative on bargraph
-diseasesCircSystemData <- diseasesCircSystemData %>% mutate(NUMBER.OF.DEATHS = ifelse(GENDER == "Males", -1 * NUMBER.OF.DEATHS, NUMBER.OF.DEATHS))
+diseasesCircSystemData <-
+  diseasesCircSystemData %>% mutate(NUMBER.OF.DEATHS = ifelse(GENDER == "Males",-1 * NUMBER.OF.DEATHS, NUMBER.OF.DEATHS))
 
 #Generate pyramid plot
-ggplot(diseasesCircSystemData, aes(x = AGE, y = NUMBER.OF.DEATHS, fill = GENDER)) + 
-  geom_bar(data=diseasesCircSystemData[diseasesCircSystemData$GENDER == "Females",], stat = "identity") + 
-  geom_bar(data=diseasesCircSystemData[diseasesCircSystemData$GENDER == "Males",], stat = "identity") + 
-  scale_y_continuous(breaks = seq(-15000, 15000, 5000), 
-                     labels = paste0(as.character(c(seq(15, 0, -5), seq(5, 15, 5))), "")) +
-  coord_flip(ylim=c(-15000,15000)) + 
-  scale_fill_brewer(palette = "Set1") + 
-  labs(title = "Number of people who die from Diseases of the circulatory system", y = "Number of deaths (1,000)", x = "Age", fill = "Gender") +
+ggplot(diseasesCircSystemData,
+       aes(x = AGE, y = NUMBER.OF.DEATHS, fill = GENDER)) +
+  geom_bar(data = diseasesCircSystemData[diseasesCircSystemData$GENDER == "Females", ], stat = "identity") +
+  geom_bar(data = diseasesCircSystemData[diseasesCircSystemData$GENDER == "Males", ], stat = "identity") +
+  scale_y_continuous(breaks = seq(-15000, 15000, 5000),
+                     labels = paste0(as.character(c(
+                       seq(15, 0,-5), seq(5, 15, 5)
+                     )), "")) +
+  coord_flip(ylim = c(-15000, 15000)) +
+  scale_fill_brewer(palette = "Set1") +
+  labs(title = "Number of Spanish people who died from Diseases of the circulatory system in 2017",
+       y = "Number of deaths (1,000)",
+       x = "Age",
+       fill = "Gender") +
   theme_bw()
 ```
 

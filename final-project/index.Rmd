@@ -68,8 +68,6 @@ In total we have 303 observations, supposedly without any null values. Some of t
 
 <div style="text-align: justify">The first part of this work is concerned with the analysis of the USA and Spain death causes datasets. This part of the project, including the variable analysis, how the plots have been constructed and comments on the insights gathered,  can be found [here](https://rguitar96.github.io/data-processes-2019/final-project/analysis). We have created a separated file to make this one more readable. However, we will addto this report  the most important graphics and conclusions.</div>
 
-[INTRODUCE SOME OF THE GRAPHS, INCLUDING THE LAST ONE OF HEART DISEASES]
-
 <div style="text-align: justify">One of the first and most important parts of this section of the project was to do a god visualization of the data we had gathered, so we spent some time building a set of good looking graphs that would help us better comprehend what we were talking about. Some of this plots are the following: </div>
 
 ### Data from the American dataset
