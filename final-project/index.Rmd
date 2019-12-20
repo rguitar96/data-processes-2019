@@ -120,7 +120,7 @@ The next step was to test different machine learning algorithms able to predict 
 
 ## Results
 ### Variable selection
-<div style="text-align: justify">The variables fed to the machine learning algorithms have been selected using a statistical approach. First, the Pearson correlation coefficient between the explanatory variables and the target one was obtained. Variables selected based on this criteria were the same selected using a Linear Regression model. In the image below, the formula of the model, alongside the significance of the variables and their interactions (Pr(<|t|)) and the
+<div style="text-align: justify">The variables fed to the machine learning algorithms have been selected using a statistical approach. First, the Pearson correlation coefficient between the explanatory variables and the target one was obtained. Variables selected based on this criteria were the same selected using a Linear Regression model. In the image below, the formula of the model, alongside the significance of the variables and their interactions (Pr(<|t|)) and their magnitude (coefficient). Variables/interactions with a p-value smaller than 0.05 are significant. Concerning the magnitudes, we can see that the stronger are the one of variables _ca_ and _thalach_ and of their respective interactions with _thal_. </div>
 
 <img src="./img/linear-regressio.png" alt="Fig 6" width="50%">
 
@@ -137,8 +137,12 @@ However, although we think that this model did a good job of predicting the targ
 ## Discussion and Future Work
 
 An analyis of the top common death causes has been carried for the USA and for Spain. During the analysis, the authors were interested in predicting if a person could suffer from a cardiovascular disease. Several machine learning algorithms were tried, resulting in the selection of a Multi-Layer Perceptron as the most precise one. However, given that it is a black box and that decisions in medical contexts require of a strong rational supporting them, the Multi-Layer Perceptron should be backed by another algorithm, like a Decision Tree. 
-[TO DO]
 
-  - An analysis of the real world implications of the results, at least one full paragraph (**5 points**)
-  - Clear suggestion for directions of future research, at least one full paragraph (**5 points**)
+
+#### Real world implications of the result.
+  <div style="text-align: justify">Cardiovascular diseases are the number one cause of death globally, taking an estimated 17.9 million lives each year. Early detection is crucial to prevent these, but symptons are often looked over. Modeling an algorithm able to predict if a patient suffers or may suffer in the future heart disease would be a huge advantage for preventing harsh consequences. Our proposed solution, while not complex, aims to help medical personel to better treat their patients, therefore improving prevention and decreasing the death rate of this disease.
+  </div>
+  
+#### Future work
+ <div style="text-align: justify">As we have seen, this was a good proof of concept, but the model lacks first loads of data. For future work, more complex datasets should be cross joint, and new complex models should be trained. On taking this approach to the real world, once this data is gathered and the model is trained, it could be given to professionals to help them on their day to day consultancy, and their feedback could be really valuable to adjust the acceptable thresholds of False Positives against False Negatives.</div>
 
