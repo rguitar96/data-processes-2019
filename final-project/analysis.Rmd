@@ -1,8 +1,9 @@
 ---
 output:
-  html_document
+  html_document:
+    code_folding: hide
 ---
-```{r}
+```{r results='hide', message=FALSE, warning=FALSE}
 library(dplyr)
 library(ggplot2)
 library(patchwork)
@@ -20,10 +21,11 @@ usa_deaths_states = read.csv("data/death-causes-usa.csv", sep=";") %>% filter(Ca
 spain_deaths = read.csv("data/death-causes-spain-2017-modified.csv", sep=";",fileEncoding="UTF-8-BOM")
 ```
 
-USA data set
+### USA Deaths Dataset
 
-
-The data published by the Centers for Disease Control and Prevention was gathered by the National Center for Health Statistics (NCHS), with the last revision being made in 2017. This data set contains the information of the 10 leading causes of death in the United States. The data is based on information from resident death certificates filed in the 50 states and the District of Columbia using demographic and medical characteristics. The data set holds 10868 observations, each with the following 6 features:
+<div style="text-align: justify">
+The data published by the Centers for Disease Control and Prevention was gathered by the National Center for Health Statistics (NCHS), with the last revision being made in 2017. This data set contains the information of the 10 leading causes of death in the United States. The data is based on information from resident death certificates filed in the 50 states and the District of Columbia using demographic and medical characteristics. The data set holds 9880 observations, each with the following 6 features:
+</div>
 
   * **Year**: The year the sample was taken
   * **X113.Cause.Name**: Official labeled causes of death
@@ -39,15 +41,16 @@ dim(usa_deaths_states)
 head(usa_deaths_states)
 ```
 
-Spanish data set
+### Spanish Deaths Dataset
 
-
+<div style="text-align: justify">
 The second data set details the causes of death in Spain for the year 2017. It was found on the  government website, https://datos.gob.es/, although since the original project proposal is no longer available at the found location. This data was collected as  part of a study done by the Spanish Institute of Statistics (INE). Due to the layout of the data it was required to transform it so it could be processed. During this process the list of disease types were reduced by combining multiple of the same type to one so it was compared to the USA data set. An example of this is the Spanish data set has 30 types of cancer listed, while the USA set has 1, so the totals for the Spanish set were totaled under the name “Cancer”. The resulting data consists of 1056 observations with the following 4 features:
+</div>
 
-	* **DISEASE**: Name of cause of death
-	* **GENDER**: The genender of the people represented by the observation, includes Males, Females and Both (total of both males and                 females)
-	* **AGE**: The age range of the people who died in the observation
-	* **NUMBER.OF.DEATHS**: The number of people that died
+  * **DISEASE**: Name of cause of death
+  * **GENDER**: The genender of the people represented by the observation, includes Males, Females and Both (total of both males and                 females)
+  * **AGE**: The age range of the people who died in the observation
+  * **NUMBER.OF.DEATHS**: The number of people that died
 
 
 
@@ -56,15 +59,18 @@ dim(spain_deaths)
 head(spain_deaths)
 ```
 
-
+<div style="text-align: justify">
 As we see, we have different data for both countries, so the comparison will be tough. We will first filter for the country data, filtering state data in the US data set in order to view the country as a whole.
+</div>
 
 ```{r}
 usa_deaths = usa_deaths_states %>% filter(State == "United States")
 head(usa_deaths)
 ```
 
+<div style="text-align: justify">
 To investigate the causes of death over the available time frame in the USA we can use a line graph to track their trends over time. The logarithmic is taken of the death rate to better represent the data. As can be seen Heart disease and Cancer are the biggest killers for all years by a large margin. Although all causes show an increase in number this is not reflective of the true trend in death rates. By plotting the age adjusted rates it is shown that death rates due to these causes are decreasing. The reason for the larger number is most likely due to increases in population, though further investigation would be required. By using this plot can also be seen that deaths from Heart disease and Cancer are decreasing relative to the population. While Alzheimer’s disease and Suicides and Unintentional Accidents are increasing. It is fair to conclude that the increase in Alzheimer’s disease is most likely due to an aging population. Though for the other two causes further data would be required to make a conclusion on cause. 
+</div>
 
 ```{r}
 area_plot <- ggplot(usa_deaths, aes(x=Year, y=Age.adjusted.Death.Rate, fill=Cause.Name)) + 
@@ -85,7 +91,9 @@ ggplotly(area_plot)
 ggplotly(line_plot)
 ```
 
+<div style="text-align: justify">
 Next we can investigate the causes in death in spain. After removing the “Other causes” type from the dataset the counts of each cause are shown in a treemap. Similar to the USA dataset the main causes of death are heart disease (Diseases of the circulatory system) and cancer. Additionally Alzeimer’s disease ranks highly, fourth largest, showing it is also an issue in Spain. 
+</div>
 
 ```{r}
 
@@ -105,8 +113,9 @@ ggplot(topTenSpanishDiseases, aes(area=NUMBER.OF.DEATHS, fill=DISEASE, label=NUM
 
 ```
 
-
+<div style="text-align: justify">
 As the Spain data also has the data broken down by gender we use this in a bar graph to investigate the difference in cause of death between females and males.  As can be seen there are varying differences between how the two genders are affected by each disease. The difference in Alzhelmer’s can be explained by the fact that on average women live longer than men. But the reason for the differences in within the other causes is unknown (to the research group) and require further study. 
+</div>
 
 ```{r}
 topTenSpanishDiseasesByGenre <- spain_deaths %>% filter(GENDER != "Both") %>% filter(DISEASE != "All causes") %>% filter(AGE == "All ages")      %>%  filter(DISEASE %in% topTenSpanishDiseases$DISEASE)
@@ -124,9 +133,24 @@ barplot
 #ggplotly(barplot) %>% layout(bargap=0.1) #messes with the legend
 ```
 
+<div style="text-align: justify">
 For this report we have decided to investigate the causes of heart disease. Using the information available in the dataset we looked at the differences between the gender and age of those who died from the disease, plotted in a pyramid graph.
 
 From the data available it can be easily determined that older women are more likely to die from heart disease, but we can gather no further insights. Further analysis of the causes is performed in part two of the report.
+</div>
+
+```{r}
+#Create data frame to hold data about people who have Diseases of the circulatory system
+diseasesCircSystemData <- spain_deaths
+
+#Set up AGE factor for pyramid plot
+diseasesCircSystemData$AGE <- factor(diseasesCircSystemData$AGE, c("0 to 1", "1 to 4", "5 to 9", "10 to 14", "15 to 19", "20 to 24", "25 to 29", "30 to 34", "35 to 39", "40 to 44", "45 to 49", "50 to 54", "55 to 59", "60 to 64", "65 to 69", "70 to 74", "75 to 79", "80 to 84", "85 to 89", "90 to 94", "95 or more", "All ages"))
+
+#Filter data to create table about only circular system disease 
+diseasesCircSystemData <- diseasesCircSystemData %>% filter(DISEASE == "Diseases of the circulatory system") %>% filter(GENDER != "Both") %>% filter(AGE != "All ages") %>% modify_at("DISEASE",~NULL)
+
+summary(diseasesCircSystemData)
+```
 
 ```{r}
 #Mutate Male data so it will be negative on bargraph
@@ -143,59 +167,4 @@ ggplot(diseasesCircSystemData, aes(x = AGE, y = NUMBER.OF.DEATHS, fill = GENDER)
   labs(title = "Number of people who die from Diseases of the circulatory system", y = "Number of deaths (1,000)", x = "Age", fill = "Gender") +
   theme_bw()
 ```
-
-
-```{r}
-unique(usa_deaths_states$State)
-```
-
-
-
-```{r}
-unique(usa_deaths_states$Cause.Name)
-```
-
-
-```{r}
-data <- usa_deaths_states
-data <- usa_deaths_states %>% filter(Year == 2017) %>% filter(State != "United States")
-
-data <- left_join(data, aggregate(data$Deaths, by=list(State=data$State), FUN=sum), by="State")
-
-
-data <- data %>% filter(Year == 2017) %>% filter(State != "United States") %>% filter(Cause.Name == "Suicide")
-
-
-
-
-
-data$region <- tolower(data$State)
-
-states <- map_data("state")
-suicide_map <- left_join(states, data, by = "region")
-
-death_map <- ggplot(data = suicide_map) + 
-  geom_polygon(aes(x = long, y = lat, fill = Deaths/x, group = group), color = "white") + 
-  coord_fixed(1.3) +
-  labs(x="", y="") +
-  theme_void() +
-  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
-panel.grid.minor = element_blank(), axis.line = element_line(colour = "white")) +
-    scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
-  guides(fill=FALSE)  # do this to leave off the color legend
-
-death_adjusted_map <- ggplot(data = suicide_map) + 
-  geom_polygon(aes(x = long, y = lat, fill = Age.adjusted.Death.Rate, group = group), color = "white") + 
-  coord_fixed(1.3) +
-  labs(x="", y="") +
-  theme_void() +
-  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
-panel.grid.minor = element_blank(), axis.line = element_line(colour = "white")) +
-    scale_fill_continuous(high = "#132B43", low = "#56B1F7") +
-  guides(fill=FALSE)  # do this to leave off the color legend
-
-ggplotly(death_map)
-ggplotly(death_adjusted_map)
-```
-
 
