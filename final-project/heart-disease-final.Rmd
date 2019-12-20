@@ -103,7 +103,7 @@ sum(is.na(data))
 
 
 ### Analysing the data
-We start by doing a simple analysis of the dataset: we can see that we do not have any categorical variable to transform because the file was already transformed form the beggining. 
+To begin simple analysis is performed on the data using bar graphs to determine patterns between having cardiovascular disease and  a person's age and gender.
 
 ```{r}
 # Summary statistics (mean, sd, quantiles, max and min)
@@ -141,12 +141,14 @@ plot.sex
 
 ```
 <br>
-We can see that the people who are afflicted the least are those aged past 55 years, and that the majority of people who are diagnosed lie below that number.
+As can be seen be seen there is a dramatic change in the number of people being diagnosed with the disease around the age of 55 years, with those younger in age being more susceptible to the disease. Although this seems to contradict the first section of the report, where older people had a higher death rate due to the disease, this is most likely that younger people have a higher survival rate. Though further investigation would be required to determine this. 
 
-Looking at the distribution of the people who have been diagnosed in comparaison with their sex, we can see that females tend to suffer it more, which corraborates the reports we got in the previus phase.
+Then looking at the distribution of diagnoses based on gender, it is shown that females have a higher probability of contracting a heart disease. This corraborates the insights made with the previous data.
+
 
 #### Looking at some factors
-We will take a look at some features that would logically be linked to the disease, like having higher BPM in the tests or the amount of pain reported afer them
+Next the features heart rate (BPM) and Chest Pain, which are likely to  have an influence on a person having the disease, are investigated. 
+
 ```{r}
 plot.thalach<- ggplot(data = data, aes(x = thalach, fill=factor(target), colour = factor(target))) +
   geom_histogram(bins = 40, position = "identity", alpha = 0.5)+
@@ -170,10 +172,12 @@ plot.cp
 
 ```
 <br>
-We can see that the higher the BPM, the higher the probability the patient has a heart problem. The same can be seen in the chest pain chart, where the higher the pain, the higher the chance the patient is positively diagnosed. This will cause a positive correlation, which we can see below.
+As can be seen in the plot above a subject with a higher value of BPM is more likely to have the presence of the disease, where having a rate of over 147 likely means it is present. The same can be seen in the chest pain chart. Where having a level of 0 is an indicator of no disease being present, but all higher levels being a strong indicator there is some level of infection.
+
 
 ### Correlations
-We will plot the correlation for all the variables.
+To investigate the strength of the relationship between heart rate and pain level felt in the data set to the presence of heart disease, along with the other viariables, a correlation plot is used.
+
 ```{r}
 # Correlation matrix
 cor.matrix <- cor(data)
@@ -185,11 +189,10 @@ cor.plot <- corrplot(cor.matrix, type = "upper", tl.col = "darkblue", tl.srt = 4
 cor.target <- as.data.frame(cor.matrix[,14]) 
 cor.target
 ```
-As expected, both CP (chest pain) and Thalach (Max heart rate achieved) have a high correlation value, but we can also see other variables affecting the target variable.
-However, we also see one problem: we can percive some variables with high correlation values between eachother too. This multicollinearity can lead to some problems when trying to use this pairs of variables in the same model and should be taken into account.
+As expected, both CP (chest pain) and Thalach (Max heart rate achieved) have a high correlation value. These along with “slope” are the values with the highest relationship with the target value. Though is can be perceived that there are high levels of correlation between the variables themselves. This multicollinearity is taken into account when selecting combinations of variables in the models.
 
 ### Data randomization
-Now we will randomize the data (with a set seed) to work on the data models and predictions.
+Before building the models for prediction a seed value is set to allow for randomisation of the data.
 ```{r}
 #We set a fixed seed to get the same result every time. 
 set.seed(42)
@@ -201,7 +204,7 @@ data <- data[rows, ]
 
 
 ### Variable normalization
-We will also normalize all the values obtain the best results.
+Then a transformation to normalize the data is applied to obtain the best results.
 ```{r}
 # Normalization function (min = 0, max = 1)
 normalize <- function(x) {
@@ -222,7 +225,7 @@ data$thal <- normalize(data$thal)
 
 
 ### Linear Regression
-The first model we decided to try was the Linear Regression Model, as it's the most simple one to test and train. We will first use it wothout removing any variables (lm.1), then with all the interactions posible (lm.2) and finally with one with only those variables with lower that 0.05 p-values in the first model (lm.3), 
+The first attempt at prediction is done using a Linear Regression Model. First a model that uses all the available predictor values is attempted (lm.1). This returns poor results, as expected, with an R-squared value of 0.5175. This is followed by a model that uses all the interactions possible (lm.2). Which returns again poor but improved results with an R-squared value of 0.6782. Then finally a model (lm.3) with one with only those variables with a p-value lower than 0.05.Wich leads to a worse R-squared result of 0.5213.
 ```{r}
 # Linear model with additive variables
 lm.1<-lm(formula = target ~ ., data = data)
@@ -236,10 +239,10 @@ summary(lm.1)
 summary(lm.2)
 summary(lm.3)
 ```
-We still get results of low R-squared values, which could be atributed to the multicollinearity we previously observed in the correlation matrix which makes models with all the variables worse.
+These low R-squared results are likely due to the multicollinearity observed in the correlation matrix, which reduces the quality of models using all the available variables.
 
 ### Subdatasets creation
-Since the target variable is binary, let's make it categorical so that the classifiers do not think we are trying to perform a regression. 
+Due to the target being binary it can be converted to a categorical variable so that the classifiers do not attempt regression. 
 ```{r}
 data$target <- as.factor(data$target)
 
@@ -250,6 +253,7 @@ data.model.1 <- data %>%
 ```
 
 ### Data split 
+The data is then split into training and testing sets to build and validate the regression models.
 ```{r}
 set.seed(42)
 #Data split: 80% for training, 20% for testing. 
@@ -260,7 +264,7 @@ test.data.1 <- data.model.1[-ind,]
 
 
 ### kNN
-Now we will use the k-Nearest Neighbors to train and test the model with the changes we did in the previos steps. We will also use Cross-Validation (5-fold) to get some resampling.
+The next model deployed is a k-Nearest Neighbors. This is configured to use all variables with interaction. This is done using Cross-Validation (5-fold) to retrieve resampling. 
 ```{r}
 # Let's use 5-fold cross-validation!
 control <- trainControl(method  = "cv", number  = 5)
@@ -277,10 +281,10 @@ cm.knn <- caret::confusionMatrix(test.data.1$target, knn.pred.1, positive = "1")
 draw_confusion_matrix(cm.knn)
 ```
 <br>
-Finally we get the best results with a k of 3, and we can see that the model is very precise and accurate. Also the sensitivity is higher than the specificity, which is exactly what we want when doing medical classification/prediction (since overlooking a patient who has a disease is problematic).
+Using a k value of 3 it can be seen in the confusion matrix generated above we can see that resulting model has high precision and accuracy. Additionally the sensitivity is high that the specification, which is desired when performing medical classification/prediction work, as it is less likely a patient with disease will be misdiagnosed. 
 
 ### Multi-Layer Perceptron
-This time we will try the Multi-layered Perceptron again with some Cross-Validation to see if we can get better results.
+In an attempt to improve the results a Multi-layered Perceptron model is made, again with some Cross-Validation
 ```{r}
 set.seed(42)
 # Let's use 5-fold cross-validation!
@@ -298,10 +302,11 @@ cm.mlp <- caret::confusionMatrix(test.data.1$target, mlp.pred.1, positive = "1")
 draw_confusion_matrix(cm.mlp)
 ```
 <br>
-This time the precision and accuracy have risen, but we get a lower sensitivity. However, overall we have reduced the number of false negatives (those instances where the patient has the disease but is predicted as healthy), which is the most important parameter. This results have bet obtaining by using a size of 1 as the hyperparameter
+The results using this model lead to higher precision and accuracy, but a lower sensitivity. However the number of false negatives (where a patient with the disease is predicted as being healthy) has been lowered, which due to this being a medical model is the most important parameter.r
 
 ### Decision Tree
-Finally, we decided to try to use a decission tree to try for a last time to improve the results.
+Finally, we decided to try to use a decission tree to try see if it able to produce better results.
+
 ```{r}
 set.seed(42)
 # Let's use 5-fold cross-validation!
@@ -321,13 +326,13 @@ cm.dt <- caret::confusionMatrix(test.data.1$target, j48.pred.1, positive = "1")
 draw_confusion_matrix(cm.dt)
 ```
 <br>
-Unfortunatelly, the results have not improved with this model, so it will not be a better predictor than the other ones. The final hyperparameter values were C equal to 0.1 and 
-M with value of 5.
+The best hyperparameter were found to be C equal to 0.1 and M with value of 5. But as can be seen above the results have not improved with this model, so it will not be a better predictor than the other ones. 
 
 ## Conclusion
 
-Overall, the biggest problem we are faced in this case is the lack of more data to do the training and testing, because only ~300 samples is a really low number. 
-However, we can say that the models that we have created are good estimators, with high precision and accuracy, as well as decent sensitivity values. The best model however would be the Multi-Layered Perceptron, because it is the one with better results and has the same or less False Negative values in comparaison to the other models.  
+As can be seen from the results above the models created are good estimators, with high precision and accuracy and decent sensitivity results. From the different models reviewed the Multi-Layered Perceptron was the clearly prefered method. This is due to not only it having better results, but less False Negative values in comparison to the other model. 
+
+To further improve these results a larger number of observations would be required. With the available data set having approximately 300 samples, the training and testing subsets could not have the sizes desired.  
 
 <br><br><br><br>
 
