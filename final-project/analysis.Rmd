@@ -117,18 +117,7 @@ barplot <- ggplot(topTenSpanishDiseasesByGenre, aes(fill=DISEASE, y=NUMBER.OF.DE
 
 barplot
 
-ggplotly(barplot) %>% layout(bargap=0.1) #messes with the legend
-
-barplot <- ggplot(topTenSpanishDiseasesByGenre, aes(x=GENDER, y=NUMBER.OF.DEATHS, fill=DISEASE)) + 
-  geom_col(colour="black",width=0.3,    
-           position=position_stack()) +
-  scale_fill_brewer(palette = "Paired") +
-  labs(x="", y = "Number of deaths (2017)")+
-  theme_minimal()
-
-barplot
-
-ggplotly(barplot) %>% layout(legend = list()) #messes with the legend
+#ggplotly(barplot) %>% layout(bargap=0.1) #messes with the legend
 ```
 
 

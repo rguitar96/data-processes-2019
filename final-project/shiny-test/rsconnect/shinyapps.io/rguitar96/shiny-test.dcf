@@ -1,0 +1,10 @@
+name: shiny-test
+title:
+username:
+account: rguitar96
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1613370
+bundleId: 2682850
+url: https://rguitar96.shinyapps.io/shiny-test/
+when: 1576837881.04082
